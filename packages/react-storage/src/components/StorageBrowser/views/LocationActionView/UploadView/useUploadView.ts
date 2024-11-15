@@ -9,14 +9,37 @@ import { Task, useProcessTasks } from '../../../tasks';
 import { DEFAULT_ACTION_CONCURRENCY } from '../constants';
 import { UploadViewState, UseUploadViewOptions } from './types';
 import { DEFAULT_OVERWRITE_ENABLED } from './constants';
+import { isUndefined } from '@aws-amplify/ui';
+
+type Message = { id: string; content: string };
 
 export const useUploadView = (
   options?: UseUploadViewOptions
 ): UploadViewState => {
+  const [tempMessage, setTempMesage] = React.useState<Message[] | undefined>(
+    undefined
+  );
   const { onExit: _onExit } = options ?? {};
   const getInput = useGetActionInput();
   const [{ files, location }, dispatchStoreAction] = useStore();
   const { current, key } = location;
+
+  const safeFiles = React.useMemo(
+    () =>
+      files?.filter(({ id, file: { size } }) => {
+        if (size > 16000000000) {
+          setTempMesage((prev) =>
+            isUndefined(prev)
+              ? [{ content: 'File "name" is too big!', id }]
+              : prev.concat({ content: 'File "name" is too big!', id })
+          );
+          dispatchStoreAction({ type: 'REMOVE_FILE_ITEM', id });
+          return false;
+        }
+        return true;
+      }),
+    [files]
+  );
 
   const [isOverwritingEnabled, setIsOverwritingEnabled] = React.useState(
     DEFAULT_OVERWRITE_ENABLED
@@ -25,7 +48,7 @@ export const useUploadView = (
   const [
     { isProcessing, isProcessingComplete, statusCounts, tasks },
     handleProcess,
-  ] = useProcessTasks(uploadHandler, files, {
+  ] = useProcessTasks(uploadHandler, safeFiles, {
     concurrency: DEFAULT_ACTION_CONCURRENCY,
   });
 
@@ -81,11 +104,13 @@ export const useUploadView = (
     isProcessingComplete,
     isOverwritingEnabled,
     location,
+    message: tempMessage,
     statusCounts,
     tasks,
     onActionCancel,
     onActionExit,
     onActionStart,
+    onMessageDismiss: () => null,
     onDropFiles,
     onTaskRemove,
     onSelectFiles,
