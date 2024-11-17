@@ -149,7 +149,7 @@ export const createFileDataItem = (data: FileData): FileDataItem => ({
 export const createFileDataItemFromLocation = (
   data: LocationData
 ): FileDataItem => ({
-  id: data.id,
+  id: crypto.randomUUID(),
   type: 'FILE',
   key: data.prefix,
   fileKey: getFileKey(data.prefix),

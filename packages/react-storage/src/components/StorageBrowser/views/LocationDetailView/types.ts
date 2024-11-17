@@ -4,13 +4,13 @@ import {
   LocationData,
   LocationItemData,
 } from '../../actions';
-import { ActionsListItem } from '../../composables/ActionsList';
+import { ActionListItem } from '../../composables/ActionsList';
 import { LocationState } from '../../providers/store/location';
 
 import { ListViewProps } from '../types';
 
 export interface LocationDetailViewState {
-  actions: ActionsListItem[];
+  actions: ActionListItem[];
   hasError: boolean;
   hasNextPage: boolean;
   hasDownloadError: boolean;

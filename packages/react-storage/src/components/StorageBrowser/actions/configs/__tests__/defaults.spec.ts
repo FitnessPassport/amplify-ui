@@ -2,7 +2,6 @@ import { ActionListItemConfig } from '../types';
 import {
   createFolderActionConfig,
   defaultActionConfigs,
-  listLocationItemsActionConfig,
   uploadActionConfig,
 } from '../defaults';
 import {
@@ -30,7 +29,7 @@ describe('defaultActionConfigs', () => {
   describe('createFolderActionConfig', () => {
     it('hides the action list item as expected', () => {
       const hide =
-        (createFolderActionConfig.actionsListItemConfig as ActionListItemConfig)!
+        (createFolderActionConfig.actionListItem as ActionListItemConfig)!
           .hide!;
       for (const permissionsWithoutWrite of generateCombinations(
         permissionValuesWithoutWrite
@@ -42,7 +41,7 @@ describe('defaultActionConfigs', () => {
 
     it('disables the action list item as expected', () => {
       const disable =
-        (createFolderActionConfig.actionsListItemConfig as ActionListItemConfig)!
+        (createFolderActionConfig.actionListItem as ActionListItemConfig)!
           .disable!;
 
       expect(disable([file])).toBe(true);
@@ -50,22 +49,9 @@ describe('defaultActionConfigs', () => {
     });
   });
 
-  describe('listLocationItemsActionConfig', () => {
-    it('returns the expected value of title', () => {
-      const { displayName } = listLocationItemsActionConfig;
-
-      expect(displayName(undefined, undefined)).toBe('-');
-      expect(displayName('bucket', undefined)).toBe('bucket');
-      expect(displayName('bucket', 'prefix/')).toBe('bucket: prefix/');
-      expect(displayName('bucket', 'prefix/nested/')).toBe(
-        'bucket: ../nested/'
-      );
-    });
-  });
-
   describe('uploadActionConfig', () => {
     it('hides the action list item as expected', () => {
-      const uploadFileListItem = uploadActionConfig.actionsListItemConfig!;
+      const uploadFileListItem = uploadActionConfig.actionListItem!;
 
       for (const permissionsWithoutWrite of generateCombinations(
         permissionValuesWithoutWrite
@@ -80,7 +66,7 @@ describe('defaultActionConfigs', () => {
     });
 
     it('disables the action list item as expected', () => {
-      const uploadFileListItem = uploadActionConfig.actionsListItemConfig!;
+      const uploadFileListItem = uploadActionConfig.actionListItem!;
 
       expect(uploadFileListItem.disable?.([file])).toBe(true);
       expect(uploadFileListItem.disable?.(undefined)).toBe(false);

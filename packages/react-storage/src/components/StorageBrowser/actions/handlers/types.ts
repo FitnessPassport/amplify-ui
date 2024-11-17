@@ -103,6 +103,11 @@ export interface TaskHandlerOutput {
   }>;
 }
 
+export type ActionHandler<T = any, U = any> = TaskHandler<
+  TaskHandlerInput<T & TaskData>,
+  TaskHandlerOutput & U
+>;
+
 export type TaskHandler<T = any, K = any> = (input: T) => K;
 
 export interface ListHandlerOptions<T = never> {

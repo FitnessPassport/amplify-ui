@@ -14,9 +14,10 @@ import { createEnhancedListHandler } from '../../actions/useAction/createEnhance
 import { useGetActionInput } from '../../providers/configuration';
 import { useSearch } from '../hooks/useSearch';
 
-import { Tasks, useProcessTasks } from '../../tasks';
+import { useDownloadAction } from '../../actions/configs/_types';
+
+import { Tasks } from '../../tasks';
 import {
-  downloadHandler,
   DownloadHandlerData,
   FileDataItem,
   defaultActionViewConfigs,
@@ -64,7 +65,8 @@ export const useLocationDetailView = (
   const { fileDataItems } = locationItems;
   const hasInvalidPrefix = isUndefined(prefix);
 
-  const [downloadTaskResult, handleDownload] = useProcessTasks(downloadHandler);
+  const [{ reset: resetDownloads, tasks }, handleDownload] =
+    useDownloadAction();
 
   const [{ data, isLoading, hasError, message }, handleList] = useDataState(
     listLocationItemsAction,
@@ -112,6 +114,7 @@ export const useLocationDetailView = (
 
     handleReset();
     handleList({ config: getConfig(), prefix: key, options: searchOptions });
+    resetDownloads();
     dispatchStoreAction({ type: 'RESET_LOCATION_ITEMS' });
   };
 
@@ -126,6 +129,7 @@ export const useLocationDetailView = (
 
   const onRefresh = () => {
     if (hasInvalidPrefix) return;
+
     handleReset();
     resetSearch();
     handleList({
@@ -133,6 +137,7 @@ export const useLocationDetailView = (
       prefix: key,
       options: { ...listOptions, refresh: true },
     });
+    resetDownloads();
     dispatchStoreAction({ type: 'RESET_LOCATION_ITEMS' });
   };
 
@@ -170,9 +175,9 @@ export const useLocationDetailView = (
 
     return Object.entries(defaultActionViewConfigs).map(
       ([actionType, config]) => {
-        const { actionsListItemConfig } = config ?? {};
+        const { actionListItem } = config ?? {};
 
-        const { icon, hide, disable, label } = actionsListItemConfig ?? {};
+        const { icon, hide, disable, label } = actionListItem ?? {};
 
         return {
           actionType,
@@ -196,13 +201,11 @@ export const useLocationDetailView = (
     fileDataItems,
     hasFiles: fileItems.length > 0,
     hasError,
-    hasDownloadError: downloadTaskResult.statusCounts.FAILED > 0,
+    hasDownloadError: tasks.some((task) => task.status === 'FAILED'),
     hasNextPage: hasNextToken,
     highestPageVisited,
     message,
-    downloadErrorMessage: getDownloadErrorMessageFromFailedDownloadTask(
-      downloadTaskResult.tasks
-    ),
+    downloadErrorMessage: getDownloadErrorMessageFromFailedDownloadTask(tasks),
     shouldShowEmptyMessage,
     isLoading,
     isSearchingSubfolders,
@@ -224,7 +227,7 @@ export const useLocationDetailView = (
       options?.onActionSelect?.(actionType);
     },
     onDownload: (data: FileDataItem) => {
-      handleDownload({ config: getConfig(), data });
+      handleDownload({ data });
     },
     onNavigateHome: () => {
       onExit?.();

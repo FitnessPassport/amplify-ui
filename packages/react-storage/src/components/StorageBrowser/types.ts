@@ -1,6 +1,13 @@
 import React from 'react';
 
 import { ListLocations } from './actions';
+import {
+  Action_Configs,
+  UseAction,
+  ResolvedActionTypes,
+  __CreateUseAction,
+} from './actions/configs/_types';
+import { DerivedViewConfigs, UseView } from './views/createUseView';
 
 import { StorageBrowserElements } from './context/elements';
 import { Components } from './ComponentsProvider';
@@ -20,6 +27,7 @@ import {
 
 import { GetLocationCredentials } from './credentials/types';
 import { StorageBrowserDisplayText } from './displayText';
+import { Default_ActionConfigs } from './actions/configs';
 
 export interface Config {
   accountId?: string;
@@ -31,8 +39,7 @@ export interface Config {
 }
 
 export interface CreateStorageBrowserInput {
-  // to be updated
-  actions?: never;
+  actions?: Action_Configs;
   config: Config;
   components?: Components;
   elements?: Partial<StorageBrowserElements>;
@@ -62,9 +69,20 @@ export interface StorageBrowserType<T = string, K = {}> {
 
 export type ActionViewName<T = string> = Exclude<
   T,
-  'listLocationItems' | 'listLocations'
+  'listLocationItems' | 'listLocations' | 'download'
 >;
 
 export interface StorageBrowserProviderProps extends StoreProviderProps {
   displayText?: StorageBrowserDisplayText;
+}
+
+export interface CreateStorageBrowserOutput<T extends Action_Configs> {
+  // StorageBrowser: StorageBrowserType<
+  //   keyof Omit<
+  //     typeof defaultActionConfigs,
+  //     'listLocationItems' | 'listLocations'
+  //   >
+  // >;
+  useAction: ReturnType<__CreateUseAction<T>>;
+  useView: UseView<DerivedViewConfigs<Default_ActionConfigs>>;
 }

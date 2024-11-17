@@ -21,9 +21,9 @@ import {
 import { isFunction } from '@aws-amplify/ui';
 
 export type UseProcessTasks = <
-  T extends TaskData,
-  K,
-  D extends T[] | undefined,
+  T extends TaskData = TaskData,
+  K = {},
+  D extends T[] | undefined = undefined,
 >(
   handler: TaskHandler<TaskHandlerInput<T> & K, TaskHandlerOutput>,
   items?: D,
@@ -42,11 +42,11 @@ const isTaskHandlerInput = (
 ): input is TaskHandlerInput => !!(input as TaskHandlerInput).data;
 
 export const useProcessTasks: UseProcessTasks = <
-  T extends TaskData,
+  T extends TaskData = TaskData,
   // input params not included in `TaskHandlerInput`
-  K,
+  K = {},
   // infered value of `items` for conditional typing of `concurrency
-  D extends T[] | undefined,
+  D extends T[] | undefined = undefined,
 >(
   handler: TaskHandler<TaskHandlerInput<T> & K, TaskHandlerOutput>,
   items?: D,
@@ -226,8 +226,12 @@ export const useProcessTasks: UseProcessTasks = <
     }
   };
 
+  const reset = () => {
+    tasks.forEach(({ data }) => updateTask(data.id));
+  };
+
   return [
-    { isProcessing, isProcessingComplete, statusCounts, tasks },
+    { isProcessing, isProcessingComplete, reset, statusCounts, tasks },
     handleProcessTasks,
   ];
 };

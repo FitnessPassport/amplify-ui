@@ -9,29 +9,29 @@ import {
 
 import { constructBucket } from './utils';
 
-export interface CopyHandlerData extends FileDataItem {}
+export interface CopyHandlerData extends FileDataItem {
+  sourceKey: string;
+}
 
 export interface CopyHandlerInput
-  extends TaskHandlerInput<CopyHandlerData, TaskHandlerOptions> {
-  destinationPrefix: string;
-}
+  extends TaskHandlerInput<CopyHandlerData, TaskHandlerOptions> {}
+
 export interface CopyHandlerOutput extends TaskHandlerOutput {}
 
 export interface CopyHandler
   extends TaskHandler<CopyHandlerInput, CopyHandlerOutput> {}
 
 export const copyHandler: CopyHandler = (input) => {
-  const { config, destinationPrefix: path, data } = input;
+  const { config, data } = input;
   const {
     accountId: expectedBucketOwner,
     credentials,
     customEndpoint,
   } = config;
-  const { key: sourcePath, fileKey } = data;
+  const { key, sourceKey } = data;
 
   const bucket = constructBucket(config);
 
-  const destinationPath = `${path}${fileKey}`;
   const source = {
     bucket,
     expectedBucketOwner,
@@ -42,9 +42,9 @@ export const copyHandler: CopyHandler = (input) => {
      *
      * see: https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html#API_CopyObject_RequestSyntax
      */
-    path: sourcePath.split('/').map(encodeURIComponent).join('/'),
+    path: sourceKey.split('/').map(encodeURIComponent).join('/'),
   };
-  const destination = { bucket, expectedBucketOwner, path: destinationPath };
+  const destination = { bucket, expectedBucketOwner, path: key };
 
   const result = copy({
     source,

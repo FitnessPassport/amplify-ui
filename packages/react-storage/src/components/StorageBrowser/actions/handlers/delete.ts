@@ -22,10 +22,11 @@ export interface DeleteHandlerOutput extends TaskHandlerOutput {}
 export interface DeleteHandler
   extends TaskHandler<DeleteHandlerInput, DeleteHandlerOutput> {}
 
-export const deleteHandler: DeleteHandler = ({
-  config,
-  data: { key },
-}): DeleteHandlerOutput => {
+export const deleteHandler: DeleteHandler = (input): DeleteHandlerOutput => {
+  const {
+    config,
+    data: { key },
+  } = input;
   const { accountId, credentials, customEndpoint } = config;
 
   const result = remove({

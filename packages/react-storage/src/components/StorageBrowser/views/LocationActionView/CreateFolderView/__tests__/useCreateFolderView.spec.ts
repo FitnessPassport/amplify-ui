@@ -66,8 +66,6 @@ describe('useCreateFolderView', () => {
 
     expect(handleProcessTasks).toHaveBeenCalledWith({
       config,
-      data: { id: 'intentionally-static-test-id', key: '/' },
-      destinationPrefix: 'test-prefix/',
       options: { preventOverwrite: true },
     });
   });

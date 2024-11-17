@@ -101,7 +101,14 @@ const config: ActionsModule.ActionInputConfig = {
 };
 useGetActionSpy.mockReturnValue(() => config);
 
+const mockId = 'intentionally-static-test-id';
 describe('useLocationsView', () => {
+  beforeAll(() => {
+    Object.defineProperty(globalThis, 'crypto', {
+      value: { randomUUID: () => mockId },
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

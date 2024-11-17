@@ -10,6 +10,7 @@ import {
 import { constructBucket } from './utils';
 
 export interface DownloadHandlerData extends FileDataItem {}
+
 export interface DownloadHandlerOptions extends TaskHandlerOptions {}
 
 export interface DownloadHandlerInput
@@ -49,8 +50,6 @@ export const downloadHandler: DownloadHandler = ({
       contentDisposition: 'attachment',
       expectedBucketOwner: accountId,
     },
-  }).then((result) => {
-    return result;
   });
 
   return {
