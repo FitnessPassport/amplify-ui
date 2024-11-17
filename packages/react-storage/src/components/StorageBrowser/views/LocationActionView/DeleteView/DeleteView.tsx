@@ -69,6 +69,7 @@ export function DeleteView({
           isActionCancelDisabled: !isProcessing || isProcessingComplete,
           isActionExitDisabled: isProcessing,
           isActionStartDisabled: isProcessing || isProcessingComplete,
+          isLoading: isProcessing,
           statusDisplayCanceledLabel,
           statusDisplayCompletedLabel,
           statusDisplayFailedLabel,

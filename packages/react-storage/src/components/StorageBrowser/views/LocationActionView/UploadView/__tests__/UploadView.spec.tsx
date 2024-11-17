@@ -128,6 +128,7 @@ describe('UploadView', () => {
         isActionCancelDisabled: true,
         isAddFilesDisabled: false,
         isAddFolderDisabled: false,
+        isLoading: false,
         isOverwriteToggleDisabled: false,
       },
     });
@@ -142,11 +143,13 @@ describe('UploadView', () => {
     expect(calls).toHaveLength(1);
     expect(calls[0][0]).toMatchObject({
       data: {
+        isProcessingComplete: false,
         isActionStartDisabled: true,
         isActionExitDisabled: true,
         isActionCancelDisabled: false,
         isAddFilesDisabled: true,
         isAddFolderDisabled: true,
+        isLoading: true,
         isOverwriteToggleDisabled: true,
       },
     });
@@ -166,6 +169,7 @@ describe('UploadView', () => {
         isActionCancelDisabled: true,
         isAddFilesDisabled: true,
         isAddFolderDisabled: true,
+        isLoading: false,
         isOverwriteToggleDisabled: true,
       },
     });

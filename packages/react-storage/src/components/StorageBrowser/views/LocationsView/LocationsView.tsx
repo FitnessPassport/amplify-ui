@@ -119,6 +119,7 @@ export function LocationsView({
   return (
     <ControlsContextProvider
       data={{
+        isLoading,
         isDataRefreshDisabled: isLoading,
         loadingIndicatorLabel,
         tableData: getLocationsViewTableData({

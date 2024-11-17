@@ -89,6 +89,7 @@ export function UploadView({
           isActionStartDisabled,
           isAddFilesDisabled,
           isAddFolderDisabled,
+          isLoading: isProcessing,
           isOverwriteToggleDisabled: isProcessing || isProcessingComplete,
           isOverwritingEnabled,
           overwriteToggleLabel,

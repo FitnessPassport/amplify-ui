@@ -73,6 +73,7 @@ export function CreateFolderView({
           actionStartLabel,
           isActionStartDisabled,
           isActionExitDisabled: isProcessing,
+          isLoading: isProcessing,
           message,
           title,
         }}
