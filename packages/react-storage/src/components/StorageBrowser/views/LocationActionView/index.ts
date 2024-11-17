@@ -1,6 +1,16 @@
-export { CopyViewState, useCopyView } from './CopyView';
+export {
+  CopyView,
+  CopyViewComponent,
+  CopyViewState,
+  useCopyView,
+} from './CopyView';
 export { CreateFolderViewState, useCreateFolderView } from './CreateFolderView';
-export { DeleteViewState, useDeleteView } from './DeleteView';
+export {
+  DeleteView,
+  DeleteViewComponent,
+  DeleteViewState,
+  useDeleteView,
+} from './DeleteView';
 export { UploadViewState, useUploadView } from './UploadView';
 export { useActionView } from './useActionView';
 

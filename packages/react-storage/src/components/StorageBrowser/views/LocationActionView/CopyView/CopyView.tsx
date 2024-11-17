@@ -23,14 +23,12 @@ import { CopyViewProvider } from './CopyViewProvider';
 import { FoldersMessageControl } from './FoldersMessageControl';
 import { FoldersPaginationControl } from './FoldersPaginationControl';
 import { FoldersTableControl } from './FoldersTableControl';
-import { CopyViewProps } from './types';
-import { useCopyView } from './useCopyView';
 import { ActionDestinationControl } from '../../../controls/ActionDestinationControl';
 
-export function CopyView({
-  className,
-  ...props
-}: CopyViewProps): React.JSX.Element {
+import { CopyViewComponent } from './types';
+import { useCopyView } from './useCopyView';
+
+export const CopyView: CopyViewComponent = ({ className, ...props }) => {
   const state = useCopyView(props);
   const {
     isProcessing,
@@ -89,7 +87,7 @@ export function CopyView({
       </CopyViewProvider>
     </div>
   );
-}
+};
 
 CopyView.displayName = 'CopyView';
 

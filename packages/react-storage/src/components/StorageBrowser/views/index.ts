@@ -1,4 +1,10 @@
-export { LocationActionView } from './LocationActionView';
+export {
+  CopyView,
+  CopyViewComponent,
+  DeleteView,
+  DeleteViewComponent,
+  LocationActionView,
+} from './LocationActionView';
 export {
   LocationDetailView,
   LocationDetailViewProps,

@@ -50,13 +50,6 @@ export interface ActionViewComponent<T extends TaskData = TaskData, K = {}> {
     props: ActionViewProps & Partial<ActionViewState<T>> & K
   ): React.JSX.Element | null;
   displayName: string;
-  Cancel: () => React.JSX.Element | null;
-  Destination: () => React.JSX.Element | null;
-  Exit: () => React.JSX.Element | null;
-  Start: () => React.JSX.Element | null;
-  StatusDisplay: () => React.JSX.Element | null;
-  Table: () => React.JSX.Element | null;
-  Title: () => React.JSX.Element | null;
 }
 
 // Custom actions derived views
