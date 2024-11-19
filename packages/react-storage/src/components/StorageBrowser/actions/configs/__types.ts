@@ -19,9 +19,11 @@ import {
   UploadHandlerData,
   TaskHandlerOutput,
   LocationData,
+  FileData,
+  DownloadHandlerData,
 } from '../handlers';
 
-import { Tasks, useProcessTasks } from '../../tasks';
+import { Task, Tasks, useProcessTasks } from '../../tasks';
 import { useGetActionInput } from '../../providers/configuration';
 import { useStore } from '../../providers/store';
 
@@ -183,9 +185,13 @@ export type ActionHandler<T = any, U = any> = TaskHandler<
 
 type UploadActionHandler = ActionHandler<UploadHandlerData>;
 
-type HandleAction<T, K> = (input: {
-  data: Omit<T, 'id'>;
+interface HandleActionInput {
   location?: LocationData;
+}
+type HandleTasksAction = (input?: HandleActionInput) => void;
+
+interface HandleTaskActionInput<T, K> extends HandleActionInput {
+  data: T;
   options?: {
     onSuccess?: (data: { id: string; key: string }, value: K) => void;
     onError?: (
@@ -193,39 +199,96 @@ type HandleAction<T, K> = (input: {
       message: string | undefined
     ) => void;
   };
-}) => void;
+}
 
-type UseActionHandlerState<T, K> = [
-  { reset: () => void; tasks: Tasks<T & TaskData> },
-  HandleAction<T, K>,
+type HandlerInput<T extends TaskData, K, U = undefined> = U extends undefined
+  ? HandleTaskActionInput<T, K>
+  : HandleActionInput;
+
+type HandleTaskAction<T, K> = (input: HandleTaskActionInput<T, K>) => void;
+
+interface TasksActionHandlerState<T extends TaskData> {
+  reset: () => void;
+  tasks: Tasks<T>;
+}
+
+type UseTasksActionHandlerState<T extends TaskData> = [
+  TasksActionHandlerState<T>,
+  HandleTasksAction,
 ];
 
-export const useActionHandler = <TData, RValue>(
-  action: ActionHandler<TData, RValue>
-): UseActionHandlerState<TData & TaskData, RValue> => {
+// interface TaskActionHandlerState<T extends TaskData> {
+//   task: Task<T>;
+// }
+
+type UseTaskActionHandlerState<T extends TaskData, K> = [
+  Task<T>,
+  HandleTaskAction<T, K>,
+];
+
+type UseActionHandlerState<
+  T extends TaskData,
+  K,
+  U = undefined,
+> = U extends undefined
+  ? UseTaskActionHandlerState<T, K>
+  : UseTasksActionHandlerState<T>;
+
+interface ActionHandlerOptions<U extends TaskData = TaskData> {
+  items: U[];
+  onTaskSuccess?: (task: Task<U>) => void;
+}
+
+export const useActionHandler = <
+  U,
+  RValue,
+  TData extends U & TaskData = U & TaskData,
+  Opts extends ActionHandlerOptions<TData> | undefined = undefined,
+>(
+  action: ActionHandler<U, RValue>,
+  options?: Opts
+): UseActionHandlerState<TData, RValue, Opts> => {
+  const { items, onTaskSuccess } = options ?? {};
   const getConfig = useGetActionInput({
     errorMessage:
-      '`useAction` must be called from inside `StorageBrowser.Provider`',
+      '`useAction` must be called from within `StorageBrowser.Provider`',
   });
 
   const {
     location: { current },
   } = useStore()[0];
 
-  const [{ reset, tasks }, processTask] = useProcessTasks(action);
+  const [{ reset, tasks }, processTask] = useProcessTasks(action, items, {
+    // @ts-expect-error
+    onTaskSuccess,
+    ...(items ? { concurrency: 4 } : undefined),
+  });
 
-  const handler: HandleAction<TData, RValue> = React.useCallback(
-    ({ data: _data, location, options }) => {
+  const handler = React.useCallback(
+    (input: HandlerInput<TData, RValue, Opts>) => {
+      const { location } = input ?? {};
       const config = getConfig(location ?? current);
-      const data = { ..._data, id: crypto.randomUUID() };
+      if ((input as HandleTaskActionInput<TData, RValue>)?.data) {
+        reset();
+        // @ts-expect-error
+        processTask({ ...input, config });
+      }
 
       // @ts-expect-error
-      processTask({ config, data, options });
+      processTask({ config });
     },
-    [current, getConfig, processTask]
+    [current, getConfig, processTask, reset]
   );
 
-  return [{ reset, tasks }, handler];
+  if (items) {
+    // eslint-disable-next-line no-console
+    console.log('tasks', tasks);
+    // @ts-expect-error
+    return [{ reset, tasks }, handler];
+  }
+
+  // @ts-expect-error
+  return [tasks?.[0], handler];
 };
 
 type CreateUseActionHandlerState<T extends ActionHandler> =
@@ -242,7 +305,10 @@ type __UseActionValues<T extends Action_Configs> = {
 export type ___UseActionFinal<T extends Action_Configs> = <
   K extends keyof __UseActionValues<T>,
 >(
-  _type: K
+  _type: K,
+  opts?: __UseActionValues<T>[K] extends { tasks: Task<infer I>[] }
+    ? ActionHandlerOptions<I>
+    : never
 ) => __UseActionValues<T>[K];
 
 export const createUseActions = <T extends Action_Configs>(
@@ -253,19 +319,42 @@ export const createUseActions = <T extends Action_Configs>(
   const customActions = !custom
     ? {}
     : Object.entries(custom).reduce((actions, [key, { handler }]) => {
-        return { ...actions, [key]: () => useActionHandler(handler) };
+        return {
+          ...actions,
+          [key]: (opts) => {
+            return useActionHandler(handler, opts);
+          },
+        };
       }, {});
 
   return <K extends keyof __UseActionValues<T>>(
-    _type: K
+    _type: K,
+    opts: any
   ): __UseActionValues<T>[K] => {
     // @ts-expect-error
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-    return customActions[_type]();
+    return customActions[_type](opts);
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// const downloadItems: DownloadHandlerData[] = [];
+
+// // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useDownloadAction = () => useActionHandler(downloadHandler);
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+
+// // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useDeleteAction = () => useActionHandler(deleteHandler);
+
+// type CustomAction = ActionHandler<FileData[]>;
+
+// const useMe = (): void => {
+//   const [state, handle] = useDownloadAction();
+//   const __out = state.tasks;
+//   const _maybe = handle({ location: {} });
+// };
+
+// export const action: CustomAction = (_input) => {
+//   return {
+//     result: Promise.resolve({ value: undefined, status: 'COMPLETE' }),
+//   };
+// };

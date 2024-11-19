@@ -62,8 +62,7 @@ export const useLocationDetailView = (
   const { fileDataItems } = locationItems;
   const hasInvalidPrefix = isUndefined(prefix);
 
-  const [{ reset: resetDownloads, tasks }, handleDownload] =
-    useDownloadAction();
+  const [task, handleDownload] = useDownloadAction();
 
   const [{ data, isLoading, hasError, message }, handleList] = useDataState(
     listLocationItemsAction,
@@ -111,7 +110,7 @@ export const useLocationDetailView = (
 
     handleReset();
     handleList({ config: getConfig(), prefix: key, options: searchOptions });
-    resetDownloads();
+
     dispatchStoreAction({ type: 'RESET_LOCATION_ITEMS' });
   };
 
@@ -134,7 +133,7 @@ export const useLocationDetailView = (
       prefix: key,
       options: { ...listOptions, refresh: true },
     });
-    resetDownloads();
+
     dispatchStoreAction({ type: 'RESET_LOCATION_ITEMS' });
   };
 
@@ -165,6 +164,7 @@ export const useLocationDetailView = (
   const shouldShowEmptyMessage =
     pageItems.length === 0 && !isLoading && !hasError;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
   const { actions: _actions } = useActionConfigs() ?? {};
 
   const actions = React.useMemo(() => {
@@ -172,18 +172,27 @@ export const useLocationDetailView = (
       return [];
     }
 
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return Object.entries(_actions).map(([actionType, config]) => {
+      // @ts-expect-error
       const { actionListItem } = config ?? {};
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { icon, hide, disable, label } = actionListItem ?? {};
 
       return {
         actionType,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         icon,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         isDisabled: isFunction(disable)
-          ? disable(fileDataItems)
+          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            disable(fileDataItems)
           : disable ?? false,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         isHidden: isFunction(hide) ? hide(permissions) : hide,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         label,
       };
     });
@@ -198,11 +207,12 @@ export const useLocationDetailView = (
     fileDataItems,
     hasFiles: fileItems.length > 0,
     hasError,
-    hasDownloadError: tasks.some((task) => task.status === 'FAILED'),
+    hasDownloadError: task?.status === 'FAILED',
     hasNextPage: hasNextToken,
     highestPageVisited,
     message,
-    downloadErrorMessage: getDownloadErrorMessageFromFailedDownloadTask(tasks),
+    downloadErrorMessage:
+      'getDownloadErrorMessageFromFailedDownloadTask(tasks)',
     shouldShowEmptyMessage,
     isLoading,
     isSearchingSubfolders,

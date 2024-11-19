@@ -70,6 +70,9 @@ export const useProcessTasks = <
 ): __UseProcessTasksState<TData & TaskData, Opts, D> => {
   const { concurrency, ...callbacks } = options ?? {};
 
+  // eslint-disable-next-line no-console
+  console.log('items', items);
+
   const callbacksRef = React.useRef(callbacks);
 
   if (callbacks) {

@@ -16,21 +16,34 @@ import '@aws-amplify/ui-react-storage/storage-browser-styles.css';
 
 import { Button, Flex, View } from '@aws-amplify/ui-react';
 
-const maybeNotSoCool: ActionHandler<
-  { someValue: string; name: string },
-  { bonus: string }
-> = (input) => {
+type ActionItem = {
+  someValue: string;
+  name: string;
+  fail?: boolean;
+  id: string;
+};
+type MyAction = ActionHandler<ActionItem, string>;
+
+const myAction: MyAction = (input) => {
+  if (input.data.fail) {
+    return {
+      result: Promise.reject({
+        message: 'Noooooooo',
+        status: 'FAILED',
+      }),
+    };
+  }
+
   return {
     result: Promise.resolve({
-      message: 'Noooooooo',
-      value: { bonus: input.data.name },
+      value: input.data.name,
       status: 'COMPLETE',
     }),
   };
 };
 
-const coolAction: ActionConfig<typeof maybeNotSoCool, 'PartyView'> = {
-  handler: maybeNotSoCool,
+const coolAction: ActionConfig<typeof myAction, 'PartyView'> = {
+  handler: myAction,
   viewName: 'PartyView',
   actionListItem: {
     icon: 'sort-indeterminate',
@@ -44,22 +57,79 @@ const { StorageBrowser, useAction, useView } = createStorageBrowser({
 });
 
 const MyView = () => {
-  const [actionOutput, handler] = useAction('coolAction');
-
-  // eslint-disable-next-line no-console
-  console.log('actionOutput', actionOutput);
-
   const [actionType, setActionType] = React.useState(undefined);
+  const locationsState = useView('Locations');
+  const _location = locationsState.pageItems[0];
+
+  const [task, atomicHandler] = useAction('coolAction');
+  if (task) {
+    console.log('task', task);
+  }
+
+  // must be memoized
+  const actionItems: ActionItem[] = React.useMemo(
+    () => [
+      {
+        name: 'Not failing',
+        someValue: 'additonal input value',
+        id: 'must be unique',
+      },
+      {
+        name: 'should fail',
+        someValue: '',
+        id: 'also must be unique',
+        fail: true,
+      },
+    ],
+    []
+  );
+
+  // @ts-expect-error
+  const [out, batchHandler] = useAction('coolAction', {
+    items: actionItems,
+    onTaskSuccess: (__, value) => {
+      console.log('task success', value);
+    },
+  });
 
   // eslint-disable-next-line no-console
-  console.log('actionType', actionType);
+  console.log('out', out.tasks);
+
+  const handleBatchAction = () => {
+    // @ts-expect-error
+    batchHandler();
+  };
+
+  const atomicTaskid = React.useRef(crypto.randomUUID()).current;
+
+  const handleAtomicAction = (fail?: boolean) =>
+    atomicHandler({
+      // only required if no location selected
+      location: _location,
+      data: { key: '', someValue: '', name: 'lame', id: atomicTaskid, fail },
+      options: {
+        onSuccess: (data, value) => {
+          console.log('success', value);
+        },
+        onError: (data, message) => {
+          console.log('message', message);
+        },
+      },
+    });
 
   const state = useView('LocationDetail');
   const { location } = state;
 
+  // add view name slots
   return (
     <>
-      {!location.current ? <StorageBrowser.LocationsView /> : null}
+      {/* add type for LocatonActionView slot usage */}
+      {/* <StorageBrowser.LocationActionView type="coolAction" /> */}
+      {/* below will not work unless UI comp is generated  */}
+      {/* <StorageBrowser.CustomView type="" /> */}
+      {!location.current ? (
+        <StorageBrowser.LocationsView {...locationsState} />
+      ) : null}
       {location.current && !actionType ? (
         <StorageBrowser.LocationDetailView.Provider {...state}>
           <StorageBrowser.LocationDetailView
@@ -70,33 +140,29 @@ const MyView = () => {
         </StorageBrowser.LocationDetailView.Provider>
       ) : null}
       {location.current && actionType === 'coolAction' ? (
-        <Button
-          onClick={() => {
-            handler({
-              data: {
-                someValue: 'a value!',
-                key: 'item key',
-                name: 'action',
-              },
-              options: {
-                onSuccess: (data, value) => {
-                  // eslint-disable-next-line no-console
-                  console.log('data', data);
-                  // eslint-disable-next-line no-console
-                  console.log('value', value);
-                },
-                onError: (data, message) => {
-                  // eslint-disable-next-line no-console
-                  console.log('data', data);
-                  // eslint-disable-next-line no-console
-                  console.log('message', message);
-                },
-              },
-            });
-          }}
-        >
-          Custom
-        </Button>
+        <>
+          <Button
+            onClick={() => {
+              handleAtomicAction();
+            }}
+          >
+            Atomic Success
+          </Button>
+          <Button
+            onClick={() => {
+              handleAtomicAction(true);
+            }}
+          >
+            Atomic Fail
+          </Button>
+          <Button
+            onClick={() => {
+              handleBatchAction();
+            }}
+          >
+            Batch Run
+          </Button>
+        </>
       ) : null}
       {location.current && actionType && actionType !== 'coolAction' ? (
         <StorageBrowser.LocationActionView

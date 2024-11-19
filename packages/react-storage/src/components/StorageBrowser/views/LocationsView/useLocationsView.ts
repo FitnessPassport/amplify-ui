@@ -25,9 +25,6 @@ export const DEFAULT_LIST_OPTIONS = {
 export const useLocationsView = (
   options?: UseLocationsViewOptions
 ): LocationsViewState => {
-  // eslint-disable-next-line no-console
-  console.log('options', options);
-
   const [state, handleList] = useListLocations();
   const { data, message, hasError, isLoading } = state;
 
@@ -110,9 +107,6 @@ export const useLocationsView = (
       });
     },
     onNavigate: (location: LocationData) => {
-      // eslint-disable-next-line no-console
-      console.log('Huh?');
-
       onNavigate?.(location);
       dispatchStoreAction({ type: 'NAVIGATE', location });
     },
