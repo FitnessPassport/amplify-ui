@@ -92,6 +92,7 @@ export const useUploadView = (
 
     handleProcess({
       config: getInput(),
+      // @ts-expect-error
       options: { preventOverwrite: !isOverwritingEnabled },
     });
   }, [

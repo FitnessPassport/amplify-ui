@@ -11,6 +11,7 @@ export {
   SelectionType,
   TaskActionConfig,
   useActionConfig,
+  useActionConfigs,
 } from './configs';
 
 export {

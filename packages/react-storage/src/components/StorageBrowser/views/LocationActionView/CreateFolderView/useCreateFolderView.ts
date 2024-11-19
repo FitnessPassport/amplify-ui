@@ -43,6 +43,7 @@ export const useCreateFolderView = (
     onActionStart: () => {
       handleCreateFolder({
         config: getConfig(),
+        // @ts-expect-error
         options: { preventOverwrite: true },
       });
     },

@@ -53,6 +53,7 @@ export const downloadHandler: DownloadHandler = ({
   });
 
   return {
+    // @ts-expect-error
     result: result
       .then(({ url }) => {
         downloadFromUrl(key, url.toString());

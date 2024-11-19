@@ -26,6 +26,7 @@ export interface CreateFolderHandlerOutput extends TaskHandlerOutput {}
 export interface CreateFolderHandler
   extends TaskHandler<CreateFolderHandlerInput, CreateFolderHandlerOutput> {}
 
+// @ts-expect-error
 export const createFolderHandler: CreateFolderHandler = (input) => {
   const { config, data, options } = input;
   const { accountId, credentials, customEndpoint } = config;

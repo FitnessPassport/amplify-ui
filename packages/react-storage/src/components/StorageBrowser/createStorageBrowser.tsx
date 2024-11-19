@@ -22,23 +22,19 @@ import {
 import { defaultActionConfigs } from './actions';
 
 import { DisplayTextProvider } from './displayText';
-import { createUseView } from './views/createUseView';
+import { useView } from './views/createUseView';
 
 import {
   CreateStorageBrowserInput,
+  CreateStorageBrowserOutput,
   StorageBrowserProviderProps,
   StorageBrowserType,
 } from './types';
+import { createUseActions } from './actions/configs/__types';
 
-export function createStorageBrowser(input: CreateStorageBrowserInput): {
-  StorageBrowser: StorageBrowserType<
-    keyof Omit<
-      typeof defaultActionConfigs,
-      'listLocationItems' | 'listLocations'
-    >
-  >;
-  useView: any;
-} {
+export function createStorageBrowser<I extends CreateStorageBrowserInput>(
+  input: I
+): CreateStorageBrowserOutput<I['actions']> {
   assertRegisterAuthListener(input.config.registerAuthListener);
 
   const {
@@ -52,6 +48,7 @@ export function createStorageBrowser(input: CreateStorageBrowserInput): {
   const ConfigurationProvider = createConfigurationProvider({
     accountId,
     actions: {
+      ...input.actions?.custom,
       ...defaultActionConfigs,
       listLocations: {
         componentName: 'LocationsView',
@@ -116,7 +113,7 @@ export function createStorageBrowser(input: CreateStorageBrowserInput): {
 
   StorageBrowser.displayName = 'StorageBrowser';
 
-  const useView = createUseView(defaultActionConfigs);
+  const useAction = createUseActions(input.actions);
 
-  return { StorageBrowser, useView };
+  return { StorageBrowser, useAction, useView };
 }

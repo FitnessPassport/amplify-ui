@@ -9,19 +9,16 @@ import {
   FileData,
   LocationData,
   listLocationItemsHandler,
+  useActionConfigs,
 } from '../../actions';
 import { createEnhancedListHandler } from '../../actions/useAction/createEnhancedListHandler';
 import { useGetActionInput } from '../../providers/configuration';
 import { useSearch } from '../hooks/useSearch';
 
-import { useDownloadAction } from '../../actions/configs/_types';
+import { useDownloadAction } from '../../actions/configs/__types';
 
 import { Tasks } from '../../tasks';
-import {
-  DownloadHandlerData,
-  FileDataItem,
-  defaultActionViewConfigs,
-} from '../../actions';
+import { DownloadHandlerData, FileDataItem } from '../../actions';
 import { LocationDetailViewState, UseLocationDetailViewOptions } from './types';
 
 const DEFAULT_PAGE_SIZE = 100;
@@ -168,29 +165,29 @@ export const useLocationDetailView = (
   const shouldShowEmptyMessage =
     pageItems.length === 0 && !isLoading && !hasError;
 
+  const { actions: _actions } = useActionConfigs() ?? {};
+
   const actions = React.useMemo(() => {
     if (!permissions) {
       return [];
     }
 
-    return Object.entries(defaultActionViewConfigs).map(
-      ([actionType, config]) => {
-        const { actionListItem } = config ?? {};
+    return Object.entries(_actions).map(([actionType, config]) => {
+      const { actionListItem } = config ?? {};
 
-        const { icon, hide, disable, label } = actionListItem ?? {};
+      const { icon, hide, disable, label } = actionListItem ?? {};
 
-        return {
-          actionType,
-          icon,
-          isDisabled: isFunction(disable)
-            ? disable(fileDataItems)
-            : disable ?? false,
-          isHidden: isFunction(hide) ? hide(permissions) : hide,
-          label,
-        };
-      }
-    );
-  }, [fileDataItems, permissions]);
+      return {
+        actionType,
+        icon,
+        isDisabled: isFunction(disable)
+          ? disable(fileDataItems)
+          : disable ?? false,
+        isHidden: isFunction(hide) ? hide(permissions) : hide,
+        label,
+      };
+    });
+  }, [_actions, fileDataItems, permissions]);
 
   return {
     actions,

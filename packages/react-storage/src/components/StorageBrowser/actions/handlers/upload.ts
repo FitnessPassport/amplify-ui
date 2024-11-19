@@ -39,6 +39,7 @@ export const UNDEFINED_CALLBACKS = {
   resume: undefined,
 };
 
+// @ts-expect-error
 export const uploadHandler: UploadHandler = ({ config, data, options }) => {
   const { accountId, credentials, customEndpoint } = config;
   const { key, file } = data;

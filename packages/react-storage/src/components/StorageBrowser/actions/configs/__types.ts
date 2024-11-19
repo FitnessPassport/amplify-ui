@@ -1,6 +1,6 @@
 import React from 'react';
-import { IconVariant } from '../../context/elements';
-import { ActionState, LocationPermissions } from '../../actions';
+import { StorageBrowserIconType } from '../../context/elements';
+import { LocationPermissions } from '../../actions';
 
 import {
   LocationItemData,
@@ -18,13 +18,12 @@ import {
   TaskData,
   UploadHandlerData,
   TaskHandlerOutput,
-  DownloadHandlerData,
-  DeleteHandlerData,
   LocationData,
 } from '../handlers';
 
 import { Tasks, useProcessTasks } from '../../tasks';
 import { useGetActionInput } from '../../providers/configuration';
+import { useStore } from '../../providers/store';
 
 const copyActionConfig: CopyActionConfig = {
   viewName: 'CopyView',
@@ -94,7 +93,7 @@ interface ActionListItemConfig {
   /**
    * list item icon
    */
-  icon: IconVariant;
+  icon: StorageBrowserIconType;
 
   /**
    * list item label
@@ -106,14 +105,16 @@ interface ActionListItemConfig {
  * defines an action to be included in the actions list of the `LocationDetailView` with
  * a dedicated subcomponent of the `LocationActionView`
  */
-interface ActionConfig<
-  T extends ActionHandler<any> = ActionHandler,
+export interface ActionConfig<
+  T extends ActionHandler = ActionHandler,
   K extends ComponentName = ComponentName,
 > {
   /**
    * action handler
    */
-  handler: T extends ActionHandler<infer U> ? ActionHandler<U> : never;
+  handler: T extends ActionHandler<infer U, infer G>
+    ? ActionHandler<U, G>
+    : never;
 
   /**
    * The view slot name associated with the action provided on the
@@ -147,19 +148,7 @@ interface Default_ActionConfigs {
   copy: CopyActionConfig;
 }
 
-const maybeNotSoCool: ActionHandler<{ someValue: string }, { bonus: number }> =
-  null as unknown as ActionHandler<{ someValue: string }>;
-
-const coolAction: ActionConfig<typeof maybeNotSoCool, 'PartyView'> = {
-  handler: maybeNotSoCool,
-  viewName: 'PartyView',
-  actionListItem: {
-    icon: 'sort-indeterminate',
-    label: 'pick me',
-  },
-};
-
-const default_Actions = {
+export const defaultStorageBrowserActions = {
   copy: copyActionConfig,
   createFolder: createFolderActionConfig,
   delete: deleteActionConfig,
@@ -167,14 +156,9 @@ const default_Actions = {
   upload: uploadActionConfig,
 };
 
-const custom_Actions = {
-  coolAction,
-  download: uploadActionConfig,
-};
-
 type Custom_ActionConfigs = Record<ActionName, ActionConfig>;
 
-interface Action_Configs {
+export interface Action_Configs {
   default?: Default_ActionConfigs;
   custom?: Custom_ActionConfigs;
 }
@@ -192,69 +176,96 @@ type ResolvedActionTypes<T> = T extends {
     >
   : never;
 
-type ActionHandler<T = any, U = any> = TaskHandler<
+export type ActionHandler<T = any, U = any> = TaskHandler<
   TaskHandlerInput<T & TaskData>,
-  TaskHandlerOutput & U
+  TaskHandlerOutput<U>
 >;
 
 type UploadActionHandler = ActionHandler<UploadHandlerData>;
 
 type HandleAction<T, K> = (input: {
-  data: Omit<T, keyof TaskData>;
+  data: Omit<T, 'id'>;
   location?: LocationData;
   options?: {
-    onSuccess?: (input: { id: string; result: K }) => void;
+    onSuccess?: (data: { id: string; key: string }, value: K) => void;
+    onError?: (
+      data: { id: string; key: string },
+      message: string | undefined
+    ) => void;
   };
 }) => void;
 
-type UseActionHandlerState<T extends TaskData, K> = [
-  { reset: () => void; tasks: Tasks<T> },
+type UseActionHandlerState<T, K> = [
+  { reset: () => void; tasks: Tasks<T & TaskData> },
   HandleAction<T, K>,
 ];
 
-export const useActionHandler = <T extends TaskData, K>(
-  action: ActionHandler<T, K>
-): UseActionHandlerState<T, K> => {
-  const getConfig = useGetActionInput();
+export const useActionHandler = <TData, RValue>(
+  action: ActionHandler<TData, RValue>
+): UseActionHandlerState<TData & TaskData, RValue> => {
+  const getConfig = useGetActionInput({
+    errorMessage:
+      '`useAction` must be called from inside `StorageBrowser.Provider`',
+  });
+
+  const {
+    location: { current },
+  } = useStore()[0];
 
   const [{ reset, tasks }, processTask] = useProcessTasks(action);
 
-  const handler: HandleAction<T, K> = React.useCallback(
-    ({ data: _data, location }) => {
-      const config = getConfig(location);
-      const data = { ..._data, id: crypto.randomUUID() } as T;
+  const handler: HandleAction<TData, RValue> = React.useCallback(
+    ({ data: _data, location, options }) => {
+      const config = getConfig(location ?? current);
+      const data = { ..._data, id: crypto.randomUUID() };
 
-      processTask({ config, data });
+      // @ts-expect-error
+      processTask({ config, data, options });
     },
-    [getConfig, processTask]
+    [current, getConfig, processTask]
   );
 
   return [{ reset, tasks }, handler];
 };
 
-type TellMe = ResolvedActionTypes<{
-  default: typeof default_Actions;
-  custom: typeof custom_Actions;
-}>;
+type CreateUseActionHandlerState<T extends ActionHandler> =
+  T extends ActionHandler<infer K, infer F>
+    ? UseActionHandlerState<K & TaskData, F>
+    : never;
 
-type ExtractTaskData<T extends ActionHandler<any>> = T extends ActionHandler<
-  infer K
->
-  ? K & TaskData
-  : never;
-
-type __Maybe = ExtractTaskData<UploadActionHandler>;
-
-type ALLL = {
-  [K in keyof TellMe]: () => UseActionHandlerState<ExtractTaskData<TellMe[K]>>;
+type __UseActionValues<T extends Action_Configs> = {
+  [K in keyof ResolvedActionTypes<T>]: CreateUseActionHandlerState<
+    ResolvedActionTypes<T>[K]
+  >;
 };
 
-const useCoolestAction = null as unknown as ALLL['coolAction'];
+export type ___UseActionFinal<T extends Action_Configs> = <
+  K extends keyof __UseActionValues<T>,
+>(
+  _type: K
+) => __UseActionValues<T>[K];
 
-const useSilly = () => {
-  const [__out, __handle] = useCoolestAction();
+export const createUseActions = <T extends Action_Configs>(
+  _configs: T
+): ___UseActionFinal<T> => {
+  const { custom } = _configs ?? {};
 
-  __handle({
-    data: { someValue: '' },
-  });
+  const customActions = !custom
+    ? {}
+    : Object.entries(custom).reduce((actions, [key, { handler }]) => {
+        return { ...actions, [key]: () => useActionHandler(handler) };
+      }, {});
+
+  return <K extends keyof __UseActionValues<T>>(
+    _type: K
+  ): __UseActionValues<T>[K] => {
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    return customActions[_type]();
+  };
 };
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const useDownloadAction = () => useActionHandler(downloadHandler);
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const useDeleteAction = () => useActionHandler(deleteHandler);

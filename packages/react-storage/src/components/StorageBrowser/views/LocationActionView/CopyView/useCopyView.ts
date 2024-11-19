@@ -35,7 +35,6 @@ export const useCopyView = (options?: UseCopyViewOptions): CopyViewState => {
       })),
     [destination.key, fileDataItems]
   );
-  const [destination, setDestination] = useState(location);
 
   const folders = useFolders({ destination, setDestination });
 
