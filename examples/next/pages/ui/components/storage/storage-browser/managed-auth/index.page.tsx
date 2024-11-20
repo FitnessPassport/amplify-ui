@@ -74,6 +74,9 @@ const LinkActionView = ({
   // @ts-expect-error
   const [{ tasks }, handleCreate] = useAction('generateLink', { items });
 
+  // eslint-disable-next-line no-console
+  console.log('tasks', tasks);
+
   return (
     <Flex direction="column">
       <Button onClick={onExit}>Exit</Button>
@@ -97,13 +100,11 @@ const LinkActionView = ({
       </Button>
       {!tasks
         ? null
-        : tasks.map(({ data, status }) => {
+        : tasks.map(({ data, status, value }) => {
             return (
               <Flex direction="row" key={data.fileKey}>
                 <Text>{data.fileKey}</Text>
-                {data.value?.url ? (
-                  <Link href={data.value?.url}>link</Link>
-                ) : null}
+                {value ? <Link href={value}>link</Link> : null}
                 <Text>{status}</Text>
               </Flex>
             );
