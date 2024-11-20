@@ -12,10 +12,8 @@ describe('useActionConfigs', () => {
     const configs: ActionConfigs = {
       ...defaultActionConfigs,
       SomeCoolAction: {
-        componentName: 'SomeCoolView',
+        viewName: 'SomeCoolView',
         handler: someCoolHandler,
-        isCancelable: false,
-        displayName: 'Do Cool Action',
       },
     };
 

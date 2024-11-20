@@ -4,16 +4,26 @@ import { createStorageBrowser } from './createStorageBrowser';
 import { StorageBrowserProps as StorageBrowserPropsBase } from './types';
 import { createAmplifyAuthAdapter } from './adapters';
 import { componentsDefault } from './componentsDefault';
+import {
+  defaultStorageBrowserActions,
+  Action_Configs,
+} from './actions/configs/__types';
 
-export interface StorageBrowserProps extends StorageBrowserPropsBase {}
+export interface StorageBrowserProps extends StorageBrowserPropsBase {
+  actions?: Action_Configs;
+}
 
 export const StorageBrowser = ({
+  actions,
   views,
   displayText,
 }: StorageBrowserProps): React.JSX.Element => {
   const { StorageBrowser } = React.useRef(
     createStorageBrowser({
-      components: componentsDefault,
+      actions: {
+        default: { ...defaultStorageBrowserActions, ...actions?.default },
+        custom: actions?.custom,
+      },
       config: createAmplifyAuthAdapter(),
     })
   ).current;

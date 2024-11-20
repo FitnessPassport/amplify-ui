@@ -14,15 +14,19 @@ export const useDeleteView = (
 
   const [{ location, locationItems }, dispatchStoreAction] = useStore();
   const { fileDataItems } = locationItems;
-  const { current } = location;
+  const { current, key } = location;
 
   const getInput = useGetActionInput();
 
-  const [processState, handleProcess] = useProcessTasks(
-    deleteHandler,
-    fileDataItems,
-    { concurrency: 4 }
+  const data = React.useMemo(
+    () =>
+      fileDataItems?.map((item) => ({ ...item, key: `${key}${item.fileKey}` })),
+    [fileDataItems, key]
   );
+
+  const [processState, handleProcess] = useProcessTasks(deleteHandler, data, {
+    concurrency: 4,
+  });
 
   const { isProcessing, isProcessingComplete, statusCounts, tasks } =
     processState;

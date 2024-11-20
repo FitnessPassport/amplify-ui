@@ -10,6 +10,10 @@ import {
   withAuthenticator,
 } from '@aws-amplify/ui-react';
 import { StorageBrowser } from '@aws-amplify/ui-react-storage';
+import {
+  ActionConfig,
+  ActionHandler,
+} from '@aws-amplify/ui-react-storage/browser';
 
 import '@aws-amplify/ui-react-storage/styles.css';
 import '@aws-amplify/ui-react-storage/storage-browser-styles.css';
@@ -17,6 +21,18 @@ import '@aws-amplify/ui-react-storage/storage-browser-styles.css';
 import config from './aws-exports';
 
 Amplify.configure(config);
+
+const maybeNotSoCool: ActionHandler<{ someValue: string }, { bonus: number }> =
+  null as unknown as ActionHandler<{ someValue: string }>;
+
+const coolAction: ActionConfig<typeof maybeNotSoCool, 'PartyView'> = {
+  handler: maybeNotSoCool,
+  viewName: 'PartyView',
+  actionListItem: {
+    icon: 'sort-indeterminate',
+    label: 'pick me',
+  },
+};
 
 const IndeterminateIcon = () => (
   <View as="span" className="amplify-icon" width="1em" height="1em">
@@ -64,6 +80,7 @@ function Example() {
           }}
         >
           <StorageBrowser
+            actions={{ custom: { coolAction } }}
             displayText={{ LocationsView: { title: 'Home - Amplify Auth' } }}
           />
         </IconsProvider>

@@ -22,9 +22,7 @@ export interface UploadHandlerData extends TaskData {
 }
 
 export interface UploadHandlerInput
-  extends TaskHandlerInput<UploadHandlerData, UploadHandlerOptions> {
-  destinationPrefix: string;
-}
+  extends TaskHandlerInput<UploadHandlerData, UploadHandlerOptions> {}
 
 export interface UploadHandlerOutput extends TaskHandlerOutput {}
 
@@ -41,18 +39,14 @@ export const UNDEFINED_CALLBACKS = {
   resume: undefined,
 };
 
-export const uploadHandler: UploadHandler = ({
-  config,
-  data,
-  destinationPrefix,
-  options,
-}) => {
+// @ts-expect-error
+export const uploadHandler: UploadHandler = ({ config, data, options }) => {
   const { accountId, credentials, customEndpoint } = config;
   const { key, file } = data;
   const { onProgress, preventOverwrite } = options ?? {};
 
   const input: UploadDataInput = {
-    path: `${destinationPrefix}${key}`,
+    path: key,
     data: file,
     options: {
       bucket: constructBucket(config),

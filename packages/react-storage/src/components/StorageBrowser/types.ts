@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { ListLocations } from './actions';
+import { ___UseActionFinal, Action_Configs } from './actions/configs/__types';
+import { UseView } from './views/createUseView';
 
 import { Components } from './ComponentsProvider';
 
@@ -30,6 +32,7 @@ export interface Config {
 }
 
 export interface CreateStorageBrowserInput {
+  actions: Action_Configs;
   config: Config;
   components?: Components;
 }
@@ -58,9 +61,15 @@ export interface StorageBrowserType<T = string, K = {}> {
 
 export type ActionViewName<T = string> = Exclude<
   T,
-  'listLocationItems' | 'listLocations'
+  'listLocationItems' | 'listLocations' | 'download'
 >;
 
 export interface StorageBrowserProviderProps extends StoreProviderProps {
   displayText?: StorageBrowserDisplayText;
+}
+
+export interface CreateStorageBrowserOutput<T extends Action_Configs> {
+  StorageBrowser: StorageBrowserType;
+  useAction: ___UseActionFinal<T>;
+  useView: UseView;
 }

@@ -161,7 +161,6 @@ describe('useUploadView', () => {
         region: 'region',
       },
       options: { preventOverwrite: true },
-      destinationPrefix: '',
     });
   });
 

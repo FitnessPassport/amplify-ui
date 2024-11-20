@@ -3,16 +3,15 @@ import React from 'react';
 import { usePaginate } from '../hooks/usePaginate';
 import {
   createFileDataItemFromLocation,
-  downloadHandler,
   ListLocationsExcludeOptions,
   LocationData,
   useListLocations,
 } from '../../actions';
 import { useStore } from '../../providers/store';
 import { useSearch } from '../hooks/useSearch';
-import { useGetActionInput } from '../../providers/configuration';
-import { useProcessTasks } from '../../tasks';
+
 import { LocationsViewState, UseLocationsViewOptions } from './types';
+import { useDownloadAction } from '../../actions/configs/__types';
 
 const DEFAULT_EXCLUDE: ListLocationsExcludeOptions = {
   exactPermissions: ['delete', 'write'],
@@ -26,12 +25,11 @@ export const DEFAULT_LIST_OPTIONS = {
 export const useLocationsView = (
   options?: UseLocationsViewOptions
 ): LocationsViewState => {
-  const getConfig = useGetActionInput();
-
   const [state, handleList] = useListLocations();
   const { data, message, hasError, isLoading } = state;
 
-  const [_, handleDownload] = useProcessTasks(downloadHandler);
+  const [_, handleDownload] = useDownloadAction();
+
   const [, dispatchStoreAction] = useStore();
   const { items, nextToken, search } = data;
   const hasNextToken = !!nextToken;
@@ -48,17 +46,13 @@ export const useLocationsView = (
 
   // initial load
   React.useEffect(() => {
-    handleList({
-      options: { ...listOptions, refresh: true },
-    });
+    handleList({ options: { ...listOptions, refresh: true } });
   }, [handleList, listOptions]);
 
   // set up pagination
   const paginateCallback = () => {
     if (!nextToken) return;
-    handleList({
-      options: { ...listOptions, nextToken },
-    });
+    handleList({ options: { ...listOptions, nextToken } });
   };
 
   const {
@@ -108,8 +102,8 @@ export const useLocationsView = (
     hasExhaustedSearch,
     onDownload: (location: LocationData) => {
       handleDownload({
-        config: getConfig(location),
         data: createFileDataItemFromLocation(location),
+        location,
       });
     },
     onNavigate: (location: LocationData) => {
@@ -119,9 +113,7 @@ export const useLocationsView = (
     onRefresh: () => {
       resetSearch();
       handleReset();
-      handleList({
-        options: { ...listOptions, refresh: true },
-      });
+      handleList({ options: { ...listOptions, refresh: true } });
     },
     onPaginate,
     onSearch: onSearchSubmit,

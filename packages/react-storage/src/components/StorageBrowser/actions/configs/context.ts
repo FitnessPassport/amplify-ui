@@ -15,9 +15,12 @@ export function useActionConfig<T extends keyof ActionConfigs>(
 ): ActionConfigs[T] {
   const { actions } = useActionConfigs();
 
-  const config = type && actions?.[type];
+  if (!type) throw new Error('`type` must be provided to `useActionConfig`');
 
-  if (!config) throw new Error('No action!');
+  const config = actions?.[type];
+  if (!config) {
+    throw new Error(`No configuration for \`type\` value of \`${type}\``);
+  }
 
   return config;
 }

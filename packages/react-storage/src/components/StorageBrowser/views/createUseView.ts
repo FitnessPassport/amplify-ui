@@ -1,63 +1,41 @@
-import { ActionConfigs } from '../actions';
-
 import {
   useCopyView,
   useCreateFolderView,
   useUploadView,
   useDeleteView,
-  ActionViewState,
-  useActionView,
 } from './LocationActionView';
 import { useLocationsView } from './LocationsView';
 import { useLocationDetailView } from './LocationDetailView';
 
 const DEFAULT_USE_VIEWS = {
-  CopyView: useCopyView,
-  CreateFolderView: useCreateFolderView,
-  DeleteView: useDeleteView,
-  LocationDetailView: useLocationDetailView,
-  LocationsView: useLocationsView,
-  UploadView: useUploadView,
-} as const;
+  Copy: useCopyView,
+  CreateFolder: useCreateFolderView,
+  Delete: useDeleteView,
+  LocationDetail: useLocationDetailView,
+  Locations: useLocationsView,
+  Upload: useUploadView,
+};
 
 type DefaultUseViews = typeof DEFAULT_USE_VIEWS;
+export type UseViewType = keyof DefaultUseViews;
 
-export type ViewKey<T extends ActionConfigs> = T extends Record<
+export type ViewKey<T> = T extends Record<
   string,
-  { componentName: `${infer U}View` }
+  { componentName?: `${infer U}View` }
 >
   ? U
+  : T extends Record<infer K, any>
+  ? K
   : never;
 
-type UseViewState<T extends string> = `${T}View` extends keyof DefaultUseViews
-  ? ReturnType<DefaultUseViews[`${T}View`]>
-  : ActionViewState;
+export type UseView = <
+  K extends keyof DefaultUseViews,
+  S extends DefaultUseViews[K],
+>(
+  type: K,
+  options?: S extends (options?: infer U) => any ? U : never
+) => ReturnType<S>;
 
-type UseView<T extends ActionConfigs = ActionConfigs> = <K extends ViewKey<T>>(
-  type: K
-) => UseViewState<K>;
-
-type CreateUseView = <T extends ActionConfigs>(configs: T) => UseView<T>;
-
-const isDefaultUseViewName = (
-  viewName?: string
-): viewName is keyof DefaultUseViews =>
-  Object.keys(DEFAULT_USE_VIEWS).some((key) => key === viewName);
-
-export const createUseView: CreateUseView = (configs) => {
-  const hooks: Record<string, UseView> = Object.values(configs).reduce(
-    (out, { componentName }) => ({
-      ...out,
-      [componentName.slice(0, -4)]: isDefaultUseViewName(componentName)
-        ? DEFAULT_USE_VIEWS[componentName]
-        : useActionView,
-    }),
-    {}
-  );
-
-  return function useView(type) {
-    // todo: add assertion here
-
-    return hooks[type](type);
-  };
-};
+export const useView: UseView = (type, options) =>
+  // @ts-expect-error
+  DEFAULT_USE_VIEWS[type](options);

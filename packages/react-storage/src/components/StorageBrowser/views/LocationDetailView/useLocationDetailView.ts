@@ -9,18 +9,16 @@ import {
   FileData,
   LocationData,
   listLocationItemsHandler,
+  useActionConfigs,
 } from '../../actions';
 import { createEnhancedListHandler } from '../../actions/useAction/createEnhancedListHandler';
 import { useGetActionInput } from '../../providers/configuration';
 import { useSearch } from '../hooks/useSearch';
 
-import { Tasks, useProcessTasks } from '../../tasks';
-import {
-  downloadHandler,
-  DownloadHandlerData,
-  FileDataItem,
-  defaultActionViewConfigs,
-} from '../../actions';
+import { useDownloadAction } from '../../actions/configs/__types';
+
+import { Tasks } from '../../tasks';
+import { DownloadHandlerData, FileDataItem } from '../../actions';
 import { LocationDetailViewState, UseLocationDetailViewOptions } from './types';
 
 const DEFAULT_PAGE_SIZE = 100;
@@ -64,7 +62,7 @@ export const useLocationDetailView = (
   const { fileDataItems } = locationItems;
   const hasInvalidPrefix = isUndefined(prefix);
 
-  const [downloadTaskResult, handleDownload] = useProcessTasks(downloadHandler);
+  const [task, handleDownload] = useDownloadAction();
 
   const [{ data, isLoading, hasError, message }, handleList] = useDataState(
     listLocationItemsAction,
@@ -112,6 +110,7 @@ export const useLocationDetailView = (
 
     handleReset();
     handleList({ config: getConfig(), prefix: key, options: searchOptions });
+
     dispatchStoreAction({ type: 'RESET_LOCATION_ITEMS' });
   };
 
@@ -126,6 +125,7 @@ export const useLocationDetailView = (
 
   const onRefresh = () => {
     if (hasInvalidPrefix) return;
+
     handleReset();
     resetSearch();
     handleList({
@@ -133,6 +133,7 @@ export const useLocationDetailView = (
       prefix: key,
       options: { ...listOptions, refresh: true },
     });
+
     dispatchStoreAction({ type: 'RESET_LOCATION_ITEMS' });
   };
 
@@ -163,29 +164,39 @@ export const useLocationDetailView = (
   const shouldShowEmptyMessage =
     pageItems.length === 0 && !isLoading && !hasError;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+  const { actions: _actions } = useActionConfigs() ?? {};
+
   const actions = React.useMemo(() => {
     if (!permissions) {
       return [];
     }
 
-    return Object.entries(defaultActionViewConfigs).map(
-      ([actionType, config]) => {
-        const { actionsListItemConfig } = config ?? {};
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return Object.entries(_actions).map(([actionType, config]) => {
+      // @ts-expect-error
+      const { actionListItem } = config ?? {};
 
-        const { icon, hide, disable, label } = actionsListItemConfig ?? {};
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { icon, hide, disable, label } = actionListItem ?? {};
 
-        return {
-          actionType,
-          icon,
-          isDisabled: isFunction(disable)
-            ? disable(fileDataItems)
-            : disable ?? false,
-          isHidden: isFunction(hide) ? hide(permissions) : hide,
-          label,
-        };
-      }
-    );
-  }, [fileDataItems, permissions]);
+      return {
+        actionType,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        icon,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        isDisabled: isFunction(disable)
+          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            disable(fileDataItems)
+          : disable ?? false,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        isHidden: isFunction(hide) ? hide(permissions) : hide,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        label,
+      };
+    });
+  }, [_actions, fileDataItems, permissions]);
 
   return {
     actions,
@@ -196,13 +207,12 @@ export const useLocationDetailView = (
     fileDataItems,
     hasFiles: fileItems.length > 0,
     hasError,
-    hasDownloadError: downloadTaskResult.statusCounts.FAILED > 0,
+    hasDownloadError: task?.status === 'FAILED',
     hasNextPage: hasNextToken,
     highestPageVisited,
     message,
-    downloadErrorMessage: getDownloadErrorMessageFromFailedDownloadTask(
-      downloadTaskResult.tasks
-    ),
+    downloadErrorMessage:
+      'getDownloadErrorMessageFromFailedDownloadTask(tasks)',
     shouldShowEmptyMessage,
     isLoading,
     isSearchingSubfolders,
@@ -224,7 +234,7 @@ export const useLocationDetailView = (
       options?.onActionSelect?.(actionType);
     },
     onDownload: (data: FileDataItem) => {
-      handleDownload({ config: getConfig(), data });
+      handleDownload({ data });
     },
     onNavigateHome: () => {
       onExit?.();

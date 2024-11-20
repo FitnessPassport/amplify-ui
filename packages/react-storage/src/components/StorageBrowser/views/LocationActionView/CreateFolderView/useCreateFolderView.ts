@@ -16,13 +16,23 @@ export const useCreateFolderView = (
   const folderNameId = React.useRef(crypto.randomUUID()).current;
 
   const getConfig = useGetActionInput();
+
+  const [{ location }, dispatchStoreAction] = useStore();
+  const { current, key } = location;
+
+  const data = React.useMemo(
+    () => [
+      // generate new `id` on each `folderName` change to refresh task
+      // data in `useProcessTasks`
+      { id: crypto.randomUUID(), key: `${key}${folderName}/` },
+    ],
+    [key, folderName]
+  );
+
   const [
     { tasks, isProcessing, isProcessingComplete, statusCounts },
     handleCreateFolder,
-  ] = useProcessTasks(createFolderHandler);
-
-  const [{ location }, dispatchStoreAction] = useStore();
-  const { current, key: destinationPrefix } = location;
+  ] = useProcessTasks(createFolderHandler, data);
 
   return {
     folderName,
@@ -33,8 +43,7 @@ export const useCreateFolderView = (
     onActionStart: () => {
       handleCreateFolder({
         config: getConfig(),
-        data: { id: folderNameId, key: `${folderName}/` },
-        destinationPrefix,
+        // @ts-expect-error
         options: { preventOverwrite: true },
       });
     },

@@ -1,5 +1,5 @@
-import { uploadData } from '../../storage-internal';
 import { isFunction } from '@aws-amplify/ui';
+import { uploadData } from '../../storage-internal';
 
 import {
   TaskData,
@@ -19,17 +19,16 @@ export interface CreateFolderHandlerInput
   extends TaskHandlerInput<
     CreateFolderHandlerData,
     CreateFolderHandlerOptions
-  > {
-  destinationPrefix: string;
-}
+  > {}
 
 export interface CreateFolderHandlerOutput extends TaskHandlerOutput {}
 
 export interface CreateFolderHandler
   extends TaskHandler<CreateFolderHandlerInput, CreateFolderHandlerOutput> {}
 
+// @ts-expect-error
 export const createFolderHandler: CreateFolderHandler = (input) => {
-  const { destinationPrefix, config, data, options } = input;
+  const { config, data, options } = input;
   const { accountId, credentials, customEndpoint } = config;
   const { onProgress, preventOverwrite } = options ?? {};
   const { key } = data;
@@ -37,7 +36,7 @@ export const createFolderHandler: CreateFolderHandler = (input) => {
   const bucket = constructBucket(config);
 
   const { result } = uploadData({
-    path: `${destinationPrefix}${key}`,
+    path: key,
     data: '',
     options: {
       bucket,

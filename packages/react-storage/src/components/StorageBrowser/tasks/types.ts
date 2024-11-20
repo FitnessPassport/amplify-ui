@@ -43,6 +43,7 @@ export type UseProcessTasksState<T extends TaskData, K, D> = [
   {
     isProcessing: boolean;
     isProcessingComplete: boolean;
+    reset: () => void;
     statusCounts: StatusCounts;
     tasks: Tasks<T>;
   },

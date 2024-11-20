@@ -2,6 +2,7 @@ export {
   ActionConfigsProvider,
   ActionConfigsProviderProps,
   useActionConfig,
+  useActionConfigs,
 } from './context';
 export {
   defaultActionConfigs,

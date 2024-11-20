@@ -12,37 +12,51 @@ import { DEFAULT_OVERWRITE_ENABLED } from './constants';
 import { isUndefined } from '@aws-amplify/ui';
 import { isFileTooBig } from '../../../validators';
 
+interface FilesData {
+  invalidFiles: FileItems | undefined;
+  validFiles: FileItems | undefined;
+  data: FileItems | undefined;
+}
+
 export const useUploadView = (
   options?: UseUploadViewOptions
 ): UploadViewState => {
   const { onExit: _onExit } = options ?? {};
   const getInput = useGetActionInput();
   const [{ files, location }, dispatchStoreAction] = useStore();
-  const { current, key } = location;
+  const { current } = location;
 
-  const { invalidFiles, validFiles } = React.useMemo(
+  const filesData = React.useMemo(
     () =>
       (files ?? [])?.reduce(
-        (curr, file) => {
-          if (isFileTooBig(file.file)) {
+        (curr: FilesData, item) => {
+          if (isFileTooBig(item.file)) {
             curr.invalidFiles = isUndefined(curr.invalidFiles)
-              ? [file]
-              : curr.invalidFiles.concat(file);
+              ? [item]
+              : curr.invalidFiles.concat(item);
           } else {
             curr.validFiles = isUndefined(curr.validFiles)
-              ? [file]
-              : curr.validFiles.concat(file);
+              ? [item]
+              : curr.validFiles.concat(item);
+
+            const parsedFileItem = {
+              ...item,
+              key: `${location.key}${item.key}`,
+            };
+
+            curr.data = isUndefined(curr.data)
+              ? [parsedFileItem]
+              : curr.data.concat(parsedFileItem);
           }
 
           return curr;
         },
-        {} as {
-          invalidFiles: FileItems | undefined;
-          validFiles: FileItems | undefined;
-        }
+        { invalidFiles: undefined, validFiles: undefined, data: undefined }
       ),
-    [files]
+    [files, location.key]
   );
+
+  const { data, invalidFiles } = filesData;
 
   const [isOverwritingEnabled, setIsOverwritingEnabled] = React.useState(
     DEFAULT_OVERWRITE_ENABLED
@@ -51,7 +65,7 @@ export const useUploadView = (
   const [
     { isProcessing, isProcessingComplete, statusCounts, tasks },
     handleProcess,
-  ] = useProcessTasks(uploadHandler, validFiles, {
+  ] = useProcessTasks(uploadHandler, data, {
     concurrency: DEFAULT_ACTION_CONCURRENCY,
   });
 
@@ -78,16 +92,15 @@ export const useUploadView = (
 
     handleProcess({
       config: getInput(),
-      destinationPrefix: key,
+      // @ts-expect-error
       options: { preventOverwrite: !isOverwritingEnabled },
     });
   }, [
+    dispatchStoreAction,
+    invalidFiles,
     isOverwritingEnabled,
-    key,
     getInput,
     handleProcess,
-    invalidFiles,
-    dispatchStoreAction,
   ]);
 
   const onActionCancel = React.useCallback(() => {
