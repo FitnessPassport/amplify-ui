@@ -21,7 +21,6 @@ import {
 } from '@aws-amplify/ui-react';
 
 import '@aws-amplify/ui-react-storage/styles.css';
-import '@aws-amplify/ui-react-storage/storage-browser-styles.css';
 
 type GetLink = ActionHandler<{ duration: number }, string>;
 
@@ -73,9 +72,6 @@ const LinkActionView = ({
 
   // @ts-expect-error
   const [{ tasks }, handleCreate] = useAction('generateLink', { items });
-
-  // eslint-disable-next-line no-console
-  console.log('tasks', tasks);
 
   return (
     <Flex direction="column">
