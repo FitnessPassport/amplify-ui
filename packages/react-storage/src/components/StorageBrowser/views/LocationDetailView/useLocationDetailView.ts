@@ -56,7 +56,8 @@ export const useLocationDetailView = (
 
   const listOptions = listOptionsRef.current;
 
-  const [{ location, locationItems }, dispatchStoreAction] = useStore();
+  const [{ location, locationItems, actionType }, dispatchStoreAction] =
+    useStore();
   const { current, key } = location;
   const { permissions, prefix } = current ?? {};
   const { fileDataItems } = locationItems;
@@ -172,34 +173,40 @@ export const useLocationDetailView = (
       return [];
     }
 
-    // @ts-expect-error
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return Object.entries(_actions).map(([actionType, config]) => {
+    return (
       // @ts-expect-error
-      const { actionListItem } = config ?? {};
+      Object.entries(_actions)
+        // @ts-expect-error
+        .filter(([, config]) => !!config.actionListItem)
+        .map(([actionType, config]) => {
+          // @ts-expect-error
+          const { actionListItem } = config ?? {};
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const { icon, hide, disable, label } = actionListItem ?? {};
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          const { icon, hide, disable, label } = actionListItem ?? {};
 
-      return {
-        actionType,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        icon,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        isDisabled: isFunction(disable)
-          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            disable(fileDataItems)
-          : disable ?? false,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-        isHidden: isFunction(hide) ? hide(permissions) : hide,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        label,
-      };
-    });
+          return {
+            actionType,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            icon,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            isDisabled: isFunction(disable)
+              ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                disable(fileDataItems)
+              : disable ?? false,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+            isHidden: isFunction(hide) ? hide(permissions) : hide,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            label,
+          };
+        })
+    );
   }, [_actions, fileDataItems, permissions]);
 
   return {
     actions,
+    actionType,
     page: currentPage,
     pageItems,
     location,
@@ -220,6 +227,16 @@ export const useLocationDetailView = (
     searchQuery,
     hasExhaustedSearch,
     onRefresh,
+    onActionExit: () => {
+      dispatchStoreAction({ type: 'RESET_ACTION_TYPE' });
+    },
+    onActionSelect: (nextActionType) => {
+      options?.onActionSelect?.(nextActionType);
+      dispatchStoreAction({
+        type: 'SET_ACTION_TYPE',
+        actionType: nextActionType,
+      });
+    },
     onNavigate: (location: LocationData, path?: string) => {
       onNavigate?.(location, path);
       resetSearch();
@@ -248,10 +265,6 @@ export const useLocationDetailView = (
       });
       dispatchStoreAction({ type: 'RESET_ACTION_TYPE' });
       dispatchStoreAction({ type: 'RESET_LOCATION_ITEMS' });
-    },
-    onActionSelect: (actionType) => {
-      options?.onActionSelect?.(actionType);
-      dispatchStoreAction({ type: 'SET_ACTION_TYPE', actionType });
     },
     onSelect: (isSelected: boolean, fileItem: FileData) => {
       dispatchStoreAction(

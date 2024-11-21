@@ -32,7 +32,7 @@ export interface Config {
 }
 
 export interface CreateStorageBrowserInput {
-  actions: Action_Configs;
+  actions?: Action_Configs;
   config: Config;
   components?: Components;
 }

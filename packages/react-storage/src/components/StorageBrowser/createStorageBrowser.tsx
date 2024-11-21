@@ -30,11 +30,13 @@ import {
   StorageBrowserProviderProps,
   StorageBrowserType,
 } from './types';
-import { createUseActions } from './actions/configs/__types';
+import { Action_Configs, createUseActions } from './actions/configs/__types';
 
 export function createStorageBrowser<I extends CreateStorageBrowserInput>(
   input: I
-): CreateStorageBrowserOutput<I['actions']> {
+): CreateStorageBrowserOutput<
+  I['actions'] extends Action_Configs ? I['actions'] : Action_Configs
+> {
   assertRegisterAuthListener(input.config.registerAuthListener);
 
   const {
@@ -47,6 +49,7 @@ export function createStorageBrowser<I extends CreateStorageBrowserInput>(
 
   const ConfigurationProvider = createConfigurationProvider({
     accountId,
+    // @ts-expect-error
     actions: {
       ...input.actions?.custom,
       ...defaultActionConfigs,
@@ -115,7 +118,12 @@ export function createStorageBrowser<I extends CreateStorageBrowserInput>(
 
   StorageBrowser.displayName = 'StorageBrowser';
 
-  const useAction = createUseActions(input.actions);
+  const actions: Action_Configs = {
+    default: { ...defaultActionConfigs, ...input.actions },
+    custom: input.actions?.custom,
+  };
+
+  const useAction = createUseActions(actions);
 
   return { StorageBrowser, useAction, useView };
 }

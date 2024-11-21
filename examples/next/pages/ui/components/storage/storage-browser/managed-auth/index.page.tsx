@@ -110,11 +110,9 @@ const LinkActionView = ({
 };
 
 const MyStorageNrowser = () => {
-  const [actionType, setActionType] = React.useState(undefined);
   const locationsState = useView('Locations');
-
-  const state = useView('LocationDetail');
-  const { location } = state;
+  const locationDetailState = useView('LocationDetail');
+  const { location, actionType, onActionExit } = locationDetailState;
 
   return (
     <>
@@ -122,29 +120,16 @@ const MyStorageNrowser = () => {
         <StorageBrowser.LocationsView {...locationsState} />
       ) : null}
       {location.current && !actionType ? (
-        <StorageBrowser.LocationDetailView.Provider {...state}>
-          <StorageBrowser.LocationDetailView
-            onActionSelect={(actionType) => {
-              setActionType(actionType);
-            }}
-          />
-        </StorageBrowser.LocationDetailView.Provider>
+        <StorageBrowser.LocationDetailView {...locationDetailState} />
       ) : null}
-
       {location.current && actionType == 'generateLink' ? (
         <LinkActionView
-          files={state.fileDataItems}
-          onExit={() => {
-            setActionType(undefined);
-          }}
+          files={locationDetailState.fileDataItems}
+          onExit={onActionExit}
         />
       ) : null}
       {location.current && actionType && actionType !== 'generateLink' ? (
-        <StorageBrowser.LocationActionView
-          onExit={() => {
-            setActionType(null);
-          }}
-        />
+        <StorageBrowser.LocationActionView />
       ) : null}
     </>
   );

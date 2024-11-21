@@ -21,6 +21,8 @@ import {
   LocationData,
   FileData,
   DownloadHandlerData,
+  ListLocationsHandler,
+  ListLocationItemsHandler,
 } from '../handlers';
 
 import { Task, Tasks, useProcessTasks } from '../../tasks';
@@ -131,16 +133,30 @@ export interface ActionConfig<
   actionListItem: ActionListItemConfig;
 }
 
-interface UploadActionConfig
+export interface UploadActionConfig
   extends ActionConfig<UploadActionHandler, 'UploadView'> {}
 
-interface DeleteActionConfig
+export interface DeleteActionConfig
   extends ActionConfig<DeleteHandler, 'DeleteView'> {}
 
-interface CopyActionConfig extends ActionConfig<CopyHandler, 'CopyView'> {}
+export interface CopyActionConfig
+  extends ActionConfig<CopyHandler, 'CopyView'> {}
 
-interface CreateFolderActionConfig
+export interface CreateFolderActionConfig
   extends ActionConfig<CreateFolderHandler, 'CreateFolderView'> {}
+
+export interface ListActionConfig<T> {
+  /**
+   * action handler
+   */
+  handler: T;
+}
+
+export interface ListLocationsActionConfig
+  extends ListActionConfig<ListLocationsHandler> {}
+
+export interface ListLocationItemsActionConfig
+  extends ListActionConfig<ListLocationItemsHandler> {}
 
 interface Default_ActionConfigs {
   createFolder: CreateFolderActionConfig;
@@ -336,22 +352,8 @@ export const createUseActions = <T extends Action_Configs>(
 
 // const downloadItems: DownloadHandlerData[] = [];
 
-// // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useDownloadAction = () => useActionHandler(downloadHandler);
 
-// // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useDeleteAction = () => useActionHandler(deleteHandler);
-
-// type CustomAction = ActionHandler<FileData[]>;
-
-// const useMe = (): void => {
-//   const [state, handle] = useDownloadAction();
-//   const __out = state.tasks;
-//   const _maybe = handle({ location: {} });
-// };
-
-// export const action: CustomAction = (_input) => {
-//   return {
-//     result: Promise.resolve({ value: undefined, status: 'COMPLETE' }),
-//   };
-// };

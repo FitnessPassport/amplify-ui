@@ -5,15 +5,19 @@ import {
   uploadHandler,
   copyHandler,
   deleteHandler,
+  downloadHandler,
 } from '../handlers';
 
 import {
   CopyActionConfig,
   CreateFolderActionConfig,
   DeleteActionConfig,
+  UploadActionConfig,
+} from './__types';
+
+import {
   ListLocationItemsActionConfig,
   ListLocationsActionConfig,
-  UploadActionConfig,
 } from './types';
 
 export const copyActionConfig: CopyActionConfig = {
@@ -75,6 +79,7 @@ export const uploadActionConfig: UploadActionConfig = {
 export const defaultActionViewConfigs = {
   copy: copyActionConfig,
   createFolder: createFolderActionConfig,
+  download: downloadHandler,
   delete: deleteActionConfig,
   upload: uploadActionConfig,
 };

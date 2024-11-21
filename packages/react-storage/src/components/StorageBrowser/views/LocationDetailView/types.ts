@@ -11,6 +11,7 @@ import { ListViewProps } from '../types';
 
 export interface LocationDetailViewState {
   actions: ActionListItem[];
+  actionType: string | undefined;
   hasError: boolean;
   hasNextPage: boolean;
   hasDownloadError: boolean;
@@ -28,6 +29,7 @@ export interface LocationDetailViewState {
   hasExhaustedSearch: boolean;
   pageItems: LocationItemData[];
   page: number;
+  onActionExit: () => void;
   onActionSelect: (actionType: string) => void;
   onDropFiles: (files: File[]) => void;
   onRefresh: () => void;
