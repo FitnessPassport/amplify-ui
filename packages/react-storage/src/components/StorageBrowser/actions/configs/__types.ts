@@ -266,9 +266,6 @@ export const useActionHandler = <
       '`useAction` must be called from within `StorageBrowser.Provider`',
   });
 
-  // eslint-disable-next-line no-console
-  console.log('items items items', options);
-
   const {
     location: { current },
   } = useStore()[0];

@@ -52,6 +52,15 @@ export interface ActionViewType<T extends TaskData = TaskData, K = {}> {
   displayName: string;
 }
 
+// export interface DefaultActionConfigs {
+//   ListLocationItems: ListLocationItemsActionConfig;
+//   ListLocations: ListLocationsActionConfig;
+//   CreateFolder: CreateFolderActionConfig;
+//   Upload: UploadActionConfig;
+//   Delete: DeleteActionConfig;
+//   Copy: CopyActionConfig;
+// }
+
 // Custom actions derived views
 export type DerivedActionViews<T> = {
   readonly [K in keyof T as K extends DefaultActionKey

@@ -65,6 +65,11 @@ export function createStorageBrowser<I extends CreateStorageBrowserInput>(
     registerAuthListener,
   });
 
+  const actions: Action_Configs = {
+    default: { ...defaultActionConfigs, ...input.actions },
+    custom: input.actions?.custom,
+  };
+
   const composables = {
     // fallback composables
     ...DEFAULT_COMPOSABLES,
@@ -98,7 +103,7 @@ export function createStorageBrowser<I extends CreateStorageBrowserInput>(
   const StorageBrowser: StorageBrowserType = ({ views, displayText }) => (
     <ErrorBoundary>
       <Provider displayText={displayText}>
-        <ViewsProvider views={views}>
+        <ViewsProvider actions={actions} views={views}>
           <StorageBrowserDefault />
         </ViewsProvider>
       </Provider>
@@ -118,12 +123,8 @@ export function createStorageBrowser<I extends CreateStorageBrowserInput>(
 
   StorageBrowser.displayName = 'StorageBrowser';
 
-  const actions: Action_Configs = {
-    default: { ...defaultActionConfigs, ...input.actions },
-    custom: input.actions?.custom,
-  };
-
   const useAction = createUseActions(actions);
 
+  // @ts-expect-error
   return { StorageBrowser, useAction, useView };
 }

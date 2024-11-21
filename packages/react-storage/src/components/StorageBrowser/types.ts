@@ -37,15 +37,13 @@ export interface CreateStorageBrowserInput {
   components?: Components;
 }
 
-export interface StorageBrowserProps<T = string> {
-  views?: Views<T>;
+export interface StorageBrowserProps<T = string, V = {}> {
+  views?: Views<T> & V;
   displayText?: StorageBrowserDisplayText;
 }
 
 export interface StorageBrowserType<T = string, K = {}> {
-  (
-    props: StorageBrowserProps & Exclude<K, keyof StorageBrowserProps>
-  ): React.JSX.Element;
+  (props: StorageBrowserProps<T, K>): React.JSX.Element;
   displayName: string;
   Provider: (props: StorageBrowserProviderProps) => React.JSX.Element;
   CopyView: CopyViewType;
@@ -59,17 +57,29 @@ export interface StorageBrowserType<T = string, K = {}> {
   LocationsView: LocationsViewType;
 }
 
-export type ActionViewName<T = string> = Exclude<
+export type DefaultActionType<T = string> = Exclude<
   T,
-  'listLocationItems' | 'listLocations' | 'download'
+  keyof NonNullable<Action_Configs['default']>
 >;
+
+export type DerivedCustomViews<T extends Action_Configs> = {
+  [K in keyof T['custom'] as K extends DefaultActionType<K>
+    ? T['custom'][K] extends { viewName: `${string}View` }
+      ? T['custom'][K]['viewName']
+      : never
+    : never]?: () => React.JSX.Element | null;
+} & {
+  // intentionally incomplete
+  UploadView?: () => React.JSX.Element | null;
+};
 
 export interface StorageBrowserProviderProps extends StoreProviderProps {
   displayText?: StorageBrowserDisplayText;
 }
 
 export interface CreateStorageBrowserOutput<T extends Action_Configs> {
-  StorageBrowser: StorageBrowserType;
+  StorageBrowser: StorageBrowserType<string, DerivedCustomViews<T>>;
   useAction: ___UseActionFinal<T>;
   useView: UseView;
+  views: DerivedCustomViews<T>;
 }

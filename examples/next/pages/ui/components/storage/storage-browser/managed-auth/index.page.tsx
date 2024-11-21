@@ -6,7 +6,6 @@ import {
   ActionHandler,
   createStorageBrowser,
   defaultStorageBrowserActions,
-  FileDataItem,
 } from '@aws-amplify/ui-react-storage/browser';
 
 import { managedAuthAdapter } from '../managedAuthAdapter';
@@ -56,18 +55,18 @@ const { StorageBrowser, useAction, useView } = createStorageBrowser({
   config: managedAuthAdapter,
 });
 
-const LinkActionView = ({
-  files,
-  onExit,
-}: {
-  files: FileDataItem[];
-  onExit: () => void;
-}) => {
+const LinkActionView = () => {
   const [duration, setDuration] = React.useState(60);
 
+  const locationDetailState = useView('LocationDetail');
+  const { onActionExit, fileDataItems } = locationDetailState;
+
   const items = React.useMemo(
-    () => (!files ? [] : files.map((item) => ({ ...item, duration }))),
-    [files, duration]
+    () =>
+      !fileDataItems
+        ? []
+        : fileDataItems.map((item) => ({ ...item, duration })),
+    [fileDataItems, duration]
   );
 
   // @ts-expect-error
@@ -75,7 +74,7 @@ const LinkActionView = ({
 
   return (
     <Flex direction="column">
-      <Button onClick={onExit}>Exit</Button>
+      <Button onClick={onActionExit}>Exit</Button>
       <StepperField
         label="Duration"
         step={15}
@@ -109,32 +108,6 @@ const LinkActionView = ({
   );
 };
 
-const MyStorageNrowser = () => {
-  const locationsState = useView('Locations');
-  const locationDetailState = useView('LocationDetail');
-  const { location, actionType, onActionExit } = locationDetailState;
-
-  return (
-    <>
-      {!location.current ? (
-        <StorageBrowser.LocationsView {...locationsState} />
-      ) : null}
-      {location.current && !actionType ? (
-        <StorageBrowser.LocationDetailView {...locationDetailState} />
-      ) : null}
-      {location.current && actionType == 'generateLink' ? (
-        <LinkActionView
-          files={locationDetailState.fileDataItems}
-          onExit={onActionExit}
-        />
-      ) : null}
-      {location.current && actionType && actionType !== 'generateLink' ? (
-        <StorageBrowser.LocationActionView />
-      ) : null}
-    </>
-  );
-};
-
 function Example() {
   const [showSignIn, setShowSignIn] = React.useState(false);
 
@@ -150,11 +123,7 @@ function Example() {
     >
       <SignOutButton onSignOut={() => setShowSignIn(false)} />
       <View flex="1" overflow="hidden">
-        <StorageBrowser.Provider
-          displayText={{ LocationsView: { title: 'Home - Managed Auth' } }}
-        >
-          <MyStorageNrowser />
-        </StorageBrowser.Provider>
+        <StorageBrowser views={{ LinkActionView }} />
       </View>
     </Flex>
   );

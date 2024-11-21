@@ -12,6 +12,8 @@ import {
   LocationsView as LocationsViewDefault,
   LocationsViewProps,
 } from './LocationsView';
+import { useStore } from '../providers/store';
+import { Action_Configs } from '../actions/configs/__types';
 
 const ERROR_MESSAGE = '`useViews` must be called from within a `ViewsProvider`';
 
@@ -32,21 +34,38 @@ const ViewsContext = React.createContext<DefaultViews | undefined>(undefined);
 export function ViewsProvider({
   children,
   views,
+  actions,
 }: {
   children?: React.ReactNode;
+  actions: Action_Configs;
   views?: Views;
 }): React.JSX.Element {
   // destructure `views` to prevent extraneous rerender of components in the
   // scenario of an unstable reference provided as `views`
   const { LocationDetailView, LocationActionView, LocationsView } = views ?? {};
-  const value = React.useMemo(
-    () => ({
+
+  const viewsRef = React.useRef(views);
+
+  const value = React.useMemo(() => {
+    const customViewMap = !actions.custom
+      ? undefined
+      : Object.entries(actions?.custom ?? {}).reduce(
+          (acc, [actionName, { viewName }]) => ({
+            ...acc,
+            // @ts-expect-error
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            [actionName]: viewsRef.current?.[viewName],
+          }),
+          {}
+        );
+
+    return {
+      ...customViewMap,
       LocationActionView: LocationActionView ?? LocationActionViewDefault,
       LocationDetailView: LocationDetailView ?? LocationDetailViewDefault,
       LocationsView: LocationsView ?? LocationsViewDefault,
-    }),
-    [LocationDetailView, LocationActionView, LocationsView]
-  );
+    };
+  }, [LocationDetailView, LocationActionView, LocationsView, actions.custom]);
 
   return (
     <ViewsContext.Provider value={value}>{children}</ViewsContext.Provider>
