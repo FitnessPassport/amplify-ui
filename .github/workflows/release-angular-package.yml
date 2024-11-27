@@ -17,7 +17,17 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
           cache: yarn
+      - name: Install packages
+        uses: ./.github/actions/install-with-retries
+        with:
+          skip-cypress-binary: true # publishing doesn't need cypress
       - run: yarn angular build
+      - name: Create .npmrc
+        run: |
+          echo "@fp:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "registry=https://npm.pkg.github.com/" >> .npmrc
+      - name: Publish to next tag
+        run: yarn changeset publish --tag ${{ inputs.dist-tag }}
       - run: yarn angular publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

@@ -28,6 +28,6 @@
   },
   "publishConfig": {
     "directory": "../../dist/ui-angular",
-    "@fp:registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com"
   }
 }
