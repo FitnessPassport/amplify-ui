@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Angular Package Release
 
 on:
   release:
