@@ -17,10 +17,7 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
           cache: yarn
-      - name: Install packages
-        uses: ./.github/actions/install-with-retries
-        with:
-          skip-cypress-binary: true # publishing doesn't need cypress
+      - run: yarn setup
       - run: yarn angular build
       - name: Create .npmrc
         run: |
