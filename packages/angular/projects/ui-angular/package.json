@@ -1,6 +1,6 @@
 {
-  "name": "@aws-amplify/ui-angular",
-  "version": "5.0.32",
+  "name": "@fp/ui-angular",
+  "version": "5.0.33",
   "scripts": {
     "build": "yarn --cwd ../../ build",
     "dev": "yarn --cwd ../../ dev",
@@ -10,12 +10,12 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aws-amplify/amplify-ui",
+    "url": "https://github.com/FitnessPassport/amplify-ui",
     "directory": "packages/angular/projects/ui-angular"
   },
   "peerDependencies": {
-    "@angular/core": ">= 14.0.0",
     "@angular/common": ">= 14.0.0",
+    "@angular/core": ">= 14.0.0",
     "aws-amplify": "^6.9.0",
     "rxjs": "^6.5.3 || ^7.4.0"
   },
@@ -27,6 +27,7 @@
     "xstate": "^4.33.6"
   },
   "publishConfig": {
-    "directory": "../../dist/ui-angular"
+    "directory": "../../dist/ui-angular",
+    "@fp:registry": "https://npm.pkg.github.com"
   }
 }

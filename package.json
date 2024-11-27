@@ -10,7 +10,7 @@
     "test": "turbo run test --filter=./packages/* --filter=!./packages/angular --filter=./packages/angular/projects/ui-angular",
     "setup": "yarn install && yarn build",
     "refresh": "yarn clean && yarn setup",
-    "angular": "yarn workspace @aws-amplify/ui-angular",
+    "angular": "yarn workspace @fp/ui-angular",
     "react": "yarn workspace @aws-amplify/ui-react",
     "react-ai": "yarn workspace @aws-amplify/ui-react-ai",
     "react-auth": "yarn workspace @aws-amplify/ui-react-auth",
