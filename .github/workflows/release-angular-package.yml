@@ -46,6 +46,7 @@ jobs:
         if: ${{ steps.check.outputs.should_release == 'true' }}
         run: |
           yarn setup
+          yarn ui build
           yarn ui publish --new-version $(cat ./packages/ui/package.json | jq -r '.version')
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -92,6 +93,7 @@ jobs:
         if: ${{ steps.check.outputs.should_release == 'true' }}
         run: |
           yarn setup
+          yarn angular build
           yarn angular publish --new-version $(cat ./packages/angular/projects/ui-angular/package.json | jq -r '.version')
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
