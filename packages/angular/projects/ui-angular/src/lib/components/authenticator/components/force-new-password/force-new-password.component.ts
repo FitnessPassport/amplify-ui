@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input } from '@angular/core';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
-import { getFormDataFromEvent, authenticatorTextUtil } from '@aws-amplify/ui';
+import { getFormDataFromEvent, authenticatorTextUtil } from '@fitnesspassport/ui';
 
 const { getChangePasswordText, getBackToSignInText } = authenticatorTextUtil;
 

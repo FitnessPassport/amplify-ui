@@ -5,7 +5,7 @@ import {
   getFormDataFromEvent,
   SignInContext,
   authenticatorTextUtil,
-} from '@aws-amplify/ui';
+} from '@fitnesspassport/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 
 const { getConfirmText, getBackToSignInText, getChallengeText } =

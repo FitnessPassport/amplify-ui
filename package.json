@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "yarn@4.5.3",
   "name": "@aws-amplify/ui-monorepo",
   "scripts": {
     "build": "turbo run build --filter=./packages/* --filter=!./packages/angular --filter=./packages/angular/projects/ui-angular",
@@ -68,14 +68,6 @@
     ]
   },
   "resolutions": {
-    "**/@react-native-community/**/fast-xml-parser": "^4.4.1",
-    "**/@aws-*/**/fast-xml-parser": "^4.4.1",
-    "**/@aws-amplify/ui-angular-example/**/codelyzer/**/@angular/core": "10.2.5",
-    "**/@angular-devkit/build-angular/minimatch": "3.0.5",
-    "**/@angular-devkit/build-angular/webpack": "^5.76.0",
-    "**/@size-limit/webpack/webpack": "^5.76.0",
-    "**/serve/serve-handler/minimatch": "3.0.5",
-    "**/serve/serve-handler/path-to-regexp": "3.3.0",
     "@adobe/css-tools": "^4.3.2",
     "@babel/traverse": "7.23.2",
     "@cypress/request": "^3.0.0",
@@ -86,7 +78,6 @@
     "browserslist": "^4.16.15",
     "cookie": "^0.7.0",
     "cross-spawn": "7.0.5",
-    "docs/next-plugin-preval/webpack": "^5.76.0",
     "follow-redirects": "^1.15.6",
     "json5": "^2.2.1",
     "loader-utils": "2.0.4",

@@ -18,8 +18,8 @@
     "./storage-browser-styles.css": "./dist/storage-browser-styles.css"
   },
   "browser": {
-    "./styles.css": "./dist/styles.css",
-    "./storage-browser-styles.css": "./dist/storage-browser-styles.css"
+    "./storage-browser-styles.css": "./dist/storage-browser-styles.css",
+    "./styles.css": "./dist/styles.css"
   },
   "types": "dist/types/index.d.ts",
   "license": "Apache-2.0",
@@ -58,9 +58,9 @@
     "react-dom": "^16.14.0 || ^17.0 || ^18.0"
   },
   "devDependencies": {
-    "jest-tsd": "^0.2.2",
     "@tsd/typescript": "^5.1.6",
-    "@types/node": "^18.19.50"
+    "@types/node": "^18.19.50",
+    "jest-tsd": "^0.2.2"
   },
   "sideEffects": [
     "dist/**/*.css"

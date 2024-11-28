@@ -4,7 +4,7 @@ import {
   countryDialCodes,
   FormFieldOptions,
   getErrors,
-} from '@aws-amplify/ui';
+} from '@fitnesspassport/ui';
 import { nanoid } from 'nanoid';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 
