@@ -23,8 +23,6 @@ jobs:
         run: |
           echo "@fp:registry=https://npm.pkg.github.com/" >> .npmrc
           echo "registry=https://npm.pkg.github.com/" >> .npmrc
-      - name: Publish to next tag
-        run: yarn changeset publish --tag ${{ inputs.dist-tag }}
-      - run: yarn angular publish
+      - run: yarn angular publish --new-version 5.0.33
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
