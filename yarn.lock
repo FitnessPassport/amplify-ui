@@ -6593,15 +6593,6 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.44.0.tgz#961a5903c74139390478bdc808bcde3fc45ab7af"
   integrity sha512-Ag+9YM4ocKQx9AarydN0KY2j0ErMHNIocPDrVo8zAE44xLTjEtz81OdR68/cydGtk6m6jDb5Za3r2useMzYmSw==
 
-"@fitnesspassport/ui@6.7.1":
-  version "6.7.1"
-  resolved "https://npm.pkg.github.com/download/@FitnessPassport/ui/6.7.1/4b5b0786b0b61f906a1cd8a565fde871a7282ee5#4b5b0786b0b61f906a1cd8a565fde871a7282ee5"
-  integrity sha512-EFgQXaBMAbXvEI5WxdCYLyh0Kt4D/zg0AKHJDwbp76d6la3Yk/Ei8/RnDEg/63aiasSbbGsZTDl9M9a9esQoPw==
-  dependencies:
-    csstype "^3.1.1"
-    lodash "4.17.21"
-    tslib "^2.5.2"
-
 "@floating-ui/core@^0.7.3":
   version "0.7.3"
   resolved "https://registry.npmjs.org/@floating-ui/core/-/core-0.7.3.tgz#d274116678ffae87f6b60e90f88cc4083eefab86"
