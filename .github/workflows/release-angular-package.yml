@@ -22,6 +22,7 @@ jobs:
           scope: '@fitnesspassport'
       - name: Create .npmrc
         run: |
+          echo "@FitnessPassport:registry=https://npm.pkg.github.com/" >> .npmrc
           echo "@fitnesspassport:registry=https://npm.pkg.github.com/" >> .npmrc
           echo "registry=https://npm.pkg.github.com/" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}}" >> .npmrc
