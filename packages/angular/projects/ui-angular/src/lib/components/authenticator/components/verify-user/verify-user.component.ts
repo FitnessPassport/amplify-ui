@@ -14,7 +14,7 @@ import {
   UnverifiedUserAttributes,
   censorContactMethod,
   ContactMethod,
-} from '@aws-amplify/ui';
+} from '@fitnesspassport/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 import { getAttributeMap } from '../../../../common';
 import { nanoid } from 'nanoid';

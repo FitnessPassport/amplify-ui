@@ -15,8 +15,8 @@ import {
   defaultAuthHubHandler,
   getServiceFacade,
   listenToAuthHub,
-} from '@aws-amplify/ui';
-import { translate } from '@aws-amplify/ui';
+} from '@fitnesspassport/ui';
+import { translate } from '@fitnesspassport/ui';
 
 import { AuthSubscriptionCallback } from '../common/types';
 

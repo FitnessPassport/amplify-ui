@@ -1,4 +1,4 @@
-import { defaultFormFieldOptions } from '@aws-amplify/ui';
+import { defaultFormFieldOptions } from '@fitnesspassport/ui';
 import { AttributeInfoProvider } from './types';
 
 export const getAttributeMap: AttributeInfoProvider = () =>

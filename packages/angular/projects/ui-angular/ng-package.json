@@ -7,7 +7,7 @@
   },
   "allowedNonPeerDependencies": [
     "@angular/common",
-    "@aws-amplify/ui",
+    "@fitnesspassport/ui",
     "classnames",
     "nanoid",
     "rxjs",

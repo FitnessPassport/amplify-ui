@@ -1343,6 +1343,17 @@
     fast-xml-parser "^4.4.1"
     tslib "^2.5.0"
 
+"@aws-amplify/ui-angular@^5.0.32":
+  version "5.0.32"
+  resolved "https://registry.yarnpkg.com/@aws-amplify/ui-angular/-/ui-angular-5.0.32.tgz#77ee94a1dedae9da7478fac2670e991991da19d1"
+  integrity sha512-XM4fAECOwpXfOY6jnDF2Bp5wLTp62e09fmiALZAwUUoWJv41TrL9SRk46ItDWceqnLKu5lsTu7Y2TO8aJrL9qw==
+  dependencies:
+    "@aws-amplify/ui" "6.7.0"
+    nanoid "3.1.31"
+    qrcode "1.5.0"
+    tslib "^2.5.2"
+    xstate "^4.33.6"
+
 "@aws-amplify/ui@*", "@aws-amplify/ui@6.7.0", "@aws-amplify/ui@^6.6.6", "@aws-amplify/ui@^6.7.0":
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/@aws-amplify/ui/-/ui-6.7.0.tgz#f31da1515a25c2fac3d9e17c9638e619a988baf8"
@@ -5610,6 +5621,15 @@
   version "8.57.1"
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
+
+"@fitnesspassport/ui@6.7.1":
+  version "6.7.1"
+  resolved "https://npm.pkg.github.com/download/@FitnessPassport/ui/6.7.1/4b5b0786b0b61f906a1cd8a565fde871a7282ee5#4b5b0786b0b61f906a1cd8a565fde871a7282ee5"
+  integrity sha512-EFgQXaBMAbXvEI5WxdCYLyh0Kt4D/zg0AKHJDwbp76d6la3Yk/Ei8/RnDEg/63aiasSbbGsZTDl9M9a9esQoPw==
+  dependencies:
+    csstype "^3.1.1"
+    lodash "4.17.21"
+    tslib "^2.5.2"
 
 "@flatten-js/interval-tree@^1.1.2":
   version "1.1.3"

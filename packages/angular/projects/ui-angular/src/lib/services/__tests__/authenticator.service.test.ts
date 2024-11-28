@@ -1,6 +1,6 @@
 import { AuthenticatorService } from '../authenticator.service';
 
-import * as UIModule from '@aws-amplify/ui';
+import * as UIModule from '@fitnesspassport/ui';
 import * as XState from 'xstate';
 
 // mock state machine service
