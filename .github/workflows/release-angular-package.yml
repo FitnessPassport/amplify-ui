@@ -28,9 +28,26 @@ jobs:
           echo "//npm.pkg.github.com/:_authToken=${GITHUB_NPM_TOKEN}" >> .npmrc
           echo "//registry.yarnpkg.com/:_authToken=${GITHUB_NPM_TOKEN}" >> .npmrc
           cat .npmrc
-      - run: yarn ui install
-      - run: yarn ui build
-      - run: yarn ui publish --new-version $(cat ./packages/ui/package.json | jq -r '.version') || true
+      - name: Check UI version is latest
+        id: check
+        run: |
+          current_version=$(cat ./packages/ui/package.json | jq -r '.version')
+          latest_version=$(npm view @FitnessPassport/ui version)
+          echo "Current version: $current_version"
+          echo "Latest version: $latest_version"
+          if test "$current_version" = "$latest_version"; then
+            echo "Current is the latest version: skipping release"
+            echo "release_ui=false" >>"$GITHUB_OUTPUT"
+          else
+            echo "Current is not the latest version: releasing"
+            echo "release_ui=true" >>"$GITHUB_OUTPUT"
+          fi
+      - name: Release
+        if: ${{ steps.check.outputs.release_ui == 'true' }}
+        run: |
+          yarn ui install
+          yarn ui build
+          yarn ui publish --new-version $(cat ./packages/ui/package.json | jq -r '.version') || true
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
   publish-angular-package:
