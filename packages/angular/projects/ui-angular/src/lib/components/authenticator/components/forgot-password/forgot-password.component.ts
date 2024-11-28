@@ -4,7 +4,7 @@ import {
   FormFieldsArray,
   getFormDataFromEvent,
   authenticatorTextUtil,
-} from '@fitnesspassport/ui';
+} from '@aws-amplify/ui';
 
 const { getResetYourPasswordText, getSendCodeText, getBackToSignInText } =
   authenticatorTextUtil;

@@ -3,7 +3,7 @@ import {
   FormFieldComponents,
   FormFieldsArray,
   getSortedFormFields,
-} from '@fitnesspassport/ui';
+} from '@aws-amplify/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 
 /**

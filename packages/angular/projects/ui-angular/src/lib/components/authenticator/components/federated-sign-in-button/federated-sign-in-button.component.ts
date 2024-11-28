@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FederatedIdentityProviders } from '@fitnesspassport/ui';
+import { FederatedIdentityProviders } from '@aws-amplify/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 
 @Component({

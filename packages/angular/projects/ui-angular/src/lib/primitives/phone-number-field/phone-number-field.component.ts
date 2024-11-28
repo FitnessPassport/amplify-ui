@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { nanoid } from 'nanoid';
-import { countryDialCodes } from '@fitnesspassport/ui';
+import { countryDialCodes } from '@aws-amplify/ui';
 
 @Component({
   selector: 'amplify-phone-number-field',
