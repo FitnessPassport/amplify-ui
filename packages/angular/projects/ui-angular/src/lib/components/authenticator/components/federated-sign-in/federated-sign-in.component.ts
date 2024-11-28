@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FederatedIdentityProviders } from '@FitnessPassport/ui';
+import { FederatedIdentityProviders } from '@fitnesspassport/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
-import { authenticatorTextUtil } from '@FitnessPassport/ui';
+import { authenticatorTextUtil } from '@fitnesspassport/ui';
 
 const { getSignInWithFederationText, getOrText } = authenticatorTextUtil;
 

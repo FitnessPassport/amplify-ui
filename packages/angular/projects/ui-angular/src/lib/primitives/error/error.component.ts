@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { translate } from '@FitnessPassport/ui';
+import { translate } from '@fitnesspassport/ui';
 
 @Component({
   selector: 'amplify-error',

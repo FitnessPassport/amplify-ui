@@ -15,7 +15,7 @@ import {
   authenticatorTextUtil,
   setUserAgent,
   SocialProvider,
-} from '@FitnessPassport/ui';
+} from '@fitnesspassport/ui';
 import { AmplifySlotDirective } from '../../../../utilities/amplify-slot/amplify-slot.directive';
 import { CustomComponentsService } from '../../../../services/custom-components.service';
 import { AuthenticatorService } from '../../../../services/authenticator.service';

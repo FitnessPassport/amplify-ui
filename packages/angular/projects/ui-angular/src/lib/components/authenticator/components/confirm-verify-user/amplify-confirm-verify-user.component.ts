@@ -3,7 +3,7 @@ import {
   FormFieldsArray,
   getFormDataFromEvent,
   authenticatorTextUtil,
-} from '@FitnessPassport/ui';
+} from '@fitnesspassport/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 
 const { getAccountRecoveryInfoText, getSkipText, getSubmitText } =
