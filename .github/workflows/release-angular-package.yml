@@ -17,6 +17,7 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
           cache: yarn
+          scope: '@fp'
       - run: yarn setup
       - run: yarn angular build
       - name: Create .npmrc
