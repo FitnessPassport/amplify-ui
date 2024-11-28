@@ -4,7 +4,7 @@ import {
   FormFieldsArray,
   getFormDataFromEvent,
   authenticatorTextUtil,
-} from '@fitnesspassport/ui';
+} from '@FitnessPassport/ui';
 
 const {
   getBackToSignInText,

@@ -1,7 +1,7 @@
 import {
   DefaultFormFieldOptions,
   AuthenticatorServiceFacade,
-} from '@fitnesspassport/ui';
+} from '@FitnessPassport/ui';
 
 // maps auth attribute to its repsective labels and placeholder
 export type AttributeInfoProvider = () => DefaultFormFieldOptions;

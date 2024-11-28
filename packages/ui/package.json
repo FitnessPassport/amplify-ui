@@ -1,5 +1,5 @@
 {
-  "name": "@fitnesspassport/ui",
+  "name": "@FitnessPassport/ui",
   "version": "6.7.1",
   "main": "dist/index.js",
   "module": "dist/esm/index.mjs",

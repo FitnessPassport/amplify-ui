@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { translate, ComponentClassName } from '@fitnesspassport/ui';
+import { translate, ComponentClassName } from '@FitnessPassport/ui';
 import { nanoid } from 'nanoid';
-import { classNames } from '@fitnesspassport/ui';
+import { classNames } from '@FitnessPassport/ui';
 
 @Component({
   selector: 'amplify-password-field',

@@ -7,7 +7,7 @@
   },
   "allowedNonPeerDependencies": [
     "@angular/common",
-    "@fitnesspassport/ui",
+    "@FitnessPassport/ui",
     "classnames",
     "nanoid",
     "rxjs",
