@@ -17,12 +17,12 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
           cache: yarn
-          scope: '@fp'
+          scope: '@FitnessPassport'
       - run: yarn setup
       - run: yarn angular build
       - name: Create .npmrc
         run: |
-          echo "@fp:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "@FitnessPassport:registry=https://npm.pkg.github.com/" >> .npmrc
           echo "registry=https://npm.pkg.github.com/" >> .npmrc
       - run: yarn angular publish --new-version 5.0.33
         env:
