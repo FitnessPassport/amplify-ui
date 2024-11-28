@@ -4,7 +4,7 @@ import {
   authenticatorTextUtil,
   getFormDataFromEvent,
   FormFieldsArray,
-} from '@fitnesspassport/ui';
+} from '@FitnessPassport/ui';
 
 const { getForgotPasswordText, getSignInText } = authenticatorTextUtil;
 

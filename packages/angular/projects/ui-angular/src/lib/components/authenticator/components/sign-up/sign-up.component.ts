@@ -1,6 +1,6 @@
 import { Component, HostBinding } from '@angular/core';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
-import { getFormDataFromEvent, authenticatorTextUtil } from '@fitnesspassport/ui';
+import { getFormDataFromEvent, authenticatorTextUtil } from '@FitnessPassport/ui';
 
 const { getCreateAccountText } = authenticatorTextUtil;
 

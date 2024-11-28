@@ -5,7 +5,7 @@ import {
   getFormDataFromEvent,
   SignInContext,
   authenticatorTextUtil,
-} from '@fitnesspassport/ui';
+} from '@FitnessPassport/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 
 const { getConfirmText, getBackToSignInText, getChallengeText } =

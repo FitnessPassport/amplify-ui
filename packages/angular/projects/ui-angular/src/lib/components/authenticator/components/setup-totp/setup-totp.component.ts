@@ -8,7 +8,7 @@ import {
   getTotpCodeURL,
   SignInContext,
   authenticatorTextUtil,
-} from '@fitnesspassport/ui';
+} from '@FitnessPassport/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 
 const logger = new Logger('SetupTotp');

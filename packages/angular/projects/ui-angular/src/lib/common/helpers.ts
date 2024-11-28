@@ -1,4 +1,4 @@
-import { defaultFormFieldOptions } from '@fitnesspassport/ui';
+import { defaultFormFieldOptions } from '@FitnessPassport/ui';
 import { AttributeInfoProvider } from './types';
 
 export const getAttributeMap: AttributeInfoProvider = () =>

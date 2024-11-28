@@ -3,7 +3,7 @@ import {
   FormFieldComponents,
   FormFieldsArray,
   getSortedFormFields,
-} from '@fitnesspassport/ui';
+} from '@FitnessPassport/ui';
 import { AuthenticatorService } from '../../../../services/authenticator.service';
 
 /**
