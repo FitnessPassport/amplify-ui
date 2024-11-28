@@ -1,6 +1,6 @@
 {
   "name": "@FitnessPassport/ui-angular",
-  "version": "5.0.33",
+  "version": "5.0.34",
   "scripts": {
     "build": "yarn --cwd ../../ build",
     "dev": "yarn --cwd ../../ dev",

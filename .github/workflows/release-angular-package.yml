@@ -5,11 +5,13 @@ on:
     types: [created]
 
 jobs:
-  publish-angular-package:
+  publish-ui-package:
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,11 +21,46 @@ jobs:
           cache: yarn
           scope: '@FitnessPassport'
       - run: yarn setup
+      - name: Get version
+        id: get_version
+        run: echo "version=$(cat ./packages/ui/package.json | jq -r '.version')" >> $GITHUB_OUTPUTS
+      - run: yarn ui build
+      - name: Create .npmrc
+        run: |
+          echo "@FitnessPassport:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "registry=https://npm.pkg.github.com/" >> .npmrc
+      - run: yarn ui publish --new-version {{ steps.get_version.outputs.version }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  publish-angular-package:
+    needs: publish-ui-package
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com/
+          cache: yarn
+          scope: '@FitnessPassport'
+      - run: yarn setup
+      - name: Get version
+        id: get_version
+        run: echo "version=$(cat ./packages/angular/projects/ui-angular/package.json | jq -r '.version')" >> $GITHUB_OUTPUTS
+      # - name: Update ui version
+      #   run: |
+      #     cd ./packages/angular/projects/ui-angular
+      #     npm install @fitnesspassport/ui@${{ needs.publish-ui-package.outputs.version }}
       - run: yarn angular build
       - name: Create .npmrc
         run: |
           echo "@FitnessPassport:registry=https://npm.pkg.github.com/" >> .npmrc
           echo "registry=https://npm.pkg.github.com/" >> .npmrc
-      - run: yarn angular publish --new-version 5.0.33
+      - run: yarn angular publish --new-version {{ steps.get_version.outputs.version }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
