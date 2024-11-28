@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "yarn@4.5.3",
+  "packageManager": "yarn@1.22.22",
   "name": "@aws-amplify/ui-monorepo",
   "scripts": {
     "build": "turbo run build --filter=./packages/* --filter=!./packages/angular --filter=./packages/angular/projects/ui-angular",
