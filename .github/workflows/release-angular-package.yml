@@ -1,0 +1,29 @@
+name: Angular Package Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish-angular-package:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com/
+          cache: yarn
+          scope: '@FitnessPassport'
+      - run: yarn setup
+      - run: yarn angular build
+      - name: Create .npmrc
+        run: |
+          echo "@FitnessPassport:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "registry=https://npm.pkg.github.com/" >> .npmrc
+      - run: yarn angular publish --new-version 5.0.33
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
