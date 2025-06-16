@@ -1,5 +1,5 @@
 import { EventEmitter, TemplateRef } from '@angular/core';
-import { AuthFormData } from '@FitnessPassport/ui';
+import { AuthFormData } from '@fitnesspassport/ui';
 
 /**
  * Maps custom components from customer to the name of the component it's overriding.

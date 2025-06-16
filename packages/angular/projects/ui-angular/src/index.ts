@@ -30,6 +30,6 @@ export * from './lib/services/custom-components.service';
 export * from './lib/services/authenticator.service';
 
 /**
- * Re-export public APIs from `@FitnessPassport/ui`
+ * Re-export public APIs from `@fitnesspassport/ui`
  */
-export { translations } from '@FitnessPassport/ui';
+export { translations } from '@fitnesspassport/ui';

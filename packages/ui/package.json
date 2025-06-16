@@ -1,5 +1,5 @@
 {
-  "name": "@FitnessPassport/ui",
+  "name": "@fitnesspassport/ui",
   "version": "6.8.0",
   "main": "dist/index.js",
   "module": "dist/esm/index.mjs",
@@ -23,7 +23,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/FitnessPassport/amplify-ui",
+    "url": "https://github.com/fitnesspassport/amplify-ui",
     "directory": "packages/ui"
   },
   "files": [

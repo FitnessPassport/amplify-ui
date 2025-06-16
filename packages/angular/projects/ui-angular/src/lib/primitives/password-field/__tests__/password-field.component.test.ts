@@ -1,4 +1,4 @@
-import { ComponentClassName } from '@FitnessPassport/ui';
+import { ComponentClassName } from '@fitnesspassport/ui';
 import { screen, render, fireEvent } from '@testing-library/angular';
 
 import { PasswordFieldComponent } from '../password-field.component';

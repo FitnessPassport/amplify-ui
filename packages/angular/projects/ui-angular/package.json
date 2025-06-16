@@ -1,5 +1,5 @@
 {
-  "name": "@FitnessPassport/ui-angular",
+  "name": "@fitnesspassport/ui-angular",
   "version": "5.1.1",
   "scripts": {
     "build": "yarn --cwd ../../ build",
@@ -10,7 +10,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/FitnessPassport/amplify-ui",
+    "url": "https://github.com/fitnesspassport/amplify-ui",
     "directory": "packages/angular/projects/ui-angular"
   },
   "peerDependencies": {
@@ -20,7 +20,7 @@
     "rxjs": "^6.5.3 || ^7.4.0"
   },
   "dependencies": {
-    "@FitnessPassport/ui": "6.8.0",
+    "@fitnesspassport/ui": "6.8.0",
     "nanoid": "3.1.31",
     "qrcode": "1.5.0",
     "tslib": "^2.5.2",
