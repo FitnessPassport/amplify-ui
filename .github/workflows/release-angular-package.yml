@@ -90,7 +90,7 @@ jobs:
       - name: Release
         if: ${{ steps.check.outputs.should_release == 'true' }}
         run: |
-          yarn setup
+          yarn setup:ui-angular
           yarn angular build
           yarn publish ./packages/angular/dist/ui-angular --new-version $(cat ./packages/angular/dist/ui-angular/package.json | jq -r '.version')
         env:
